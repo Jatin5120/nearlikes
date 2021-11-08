@@ -3,7 +3,9 @@ package com.example.nearlikes;
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Environment;
@@ -17,25 +19,33 @@ import android.content.pm.PackageManager;
 import android.widget.Toast;
 
 public class MainActivity extends FlutterActivity {
+    private static final String PERMISSION_CHANNEL = "com.example.nearlikes/permission";
+
+    private static boolean isPermission = false;
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
-        String PERMISSION_CHANNEL = "com.example.nearlikes/permission";
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), PERMISSION_CHANNEL)
-                .setMethodCallHandler((call, result) -> {
-                    // Note: this method is invoked on the main thread.
-                    // TODO
+                .setMethodCallHandler((MethodCall call, MethodChannel.Result result) -> {
+                    if (call.method.equals("getPermission")) {
+                        result.success(getPermissions());
+                    } else {
+                        System.out.println("Wrong Method call from java");
+                    }
                 });
     }
 
-    public void takePermissions() {
+    public boolean getPermissions() {
         if (isPermissionGranted()) {
-            Toast.makeText(this, "Permission Already Granted", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Permission Already Granted",
+            // Toast.LENGTH_SHORT).show();
             System.out.println("Permission Granted");
+            isPermission = true;
         } else {
             takePermission();
         }
+        return isPermission;
     }
 
     private boolean isPermissionGranted() {
@@ -45,13 +55,13 @@ public class MainActivity extends FlutterActivity {
         } else {
             // for Android 10 and below
             int readExternalStoragePermission = ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE);
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
             return readExternalStoragePermission == PackageManager.PERMISSION_GRANTED;
         }
     }
 
     private void takePermission() {
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
                 intent.addCategory("android.intent.category.DEFAULT");
@@ -61,10 +71,9 @@ public class MainActivity extends FlutterActivity {
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                 startActivityForResult(intent, 100);
-
             }
         } else {
-            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE }, 100);
+            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 101);
         }
     }
 
@@ -74,9 +83,10 @@ public class MainActivity extends FlutterActivity {
 
         if (resultCode == RESULT_OK) {
             if (requestCode == 100) {
-                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     if (Environment.isExternalStorageManager()) {
                         Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                        isPermission = true;
                     } else {
                         takePermission();
                     }
@@ -91,10 +101,11 @@ public class MainActivity extends FlutterActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0) {
             if (requestCode == 101) {
-                boolean readExternalStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean writeExternalStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
-                if (readExternalStorage) {
+                if (writeExternalStorage) {
                     Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                    isPermission = true;
                 } else {
                     takePermission();
                 }

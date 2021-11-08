@@ -16,10 +16,13 @@ void main() async {
   // await Firebase.initializeApp();
   globals.appNaviagtor = GlobalKey<NavigatorState>();
   initializeControllers();
-  runApp(GetMaterialApp(
+  runApp(
+    GetMaterialApp(
       navigatorKey: globals.appNaviagtor,
       debugShowCheckedModeBanner: false,
-      home: Nearlikes()));
+      home: Nearlikes(),
+    ),
+  );
 }
 
 class Nearlikes extends StatefulWidget {

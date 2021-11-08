@@ -4,6 +4,8 @@ const Color kPrimaryColor = Color(0xFFFF4B2B);
 
 const Color kSecondaryColor = Color(0xFFFF416C);
 
+const Color kSecondaryBackgroundColor = Color(0xFFFFEBEF);
+
 const Color kBlueColor = Color(0xff5186F2);
 
 const Color kBackgroundColor = Color(0xFFFAFAFA);

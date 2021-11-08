@@ -8,8 +8,8 @@ Future<GetMedia> getAvailableMedia({@required String id}) async {
   print('inside get media two2');
   GetMedia _getMedia;
 
-  //const String apiUrl = "https://nearlikes.com/v1/api/client/get/media";
-  const String apiUrl = "https://api.nearlikes.com/v1/api/client/get/media";
+  const String apiUrl = "https://nearlikes.com/v1/api/client/get/media";
+  // const String apiUrl = "https://api.nearlikes.com/v1/api/client/get/media";
   var body = {
     "id": id,
   };

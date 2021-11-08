@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -14,7 +15,9 @@ class DownloadController extends GetxController {
   final RxDouble _progress = 0.0.obs;
   Directory _directory;
 
-  static Dio _dio = Dio();
+  static final Dio _dio = Dio();
+  static const MethodChannel methondChannel =
+      MethodChannel("com.example.nearlikes/permission");
 
   double get progress => _progress.value;
 
@@ -29,13 +32,13 @@ class DownloadController extends GetxController {
     }
     if (await _directory.exists()) {
       File file = File(_directory.path + '/$fileName');
-      Get.dialog(DownloadingDialog(), barrierDismissible: false);
+      Get.dialog(const DownloadingDialog(), barrierDismissible: false);
       print('Downloading start');
       try {
         await _dio.download(url, file.path,
             onReceiveProgress: (received, total) {
-              progress = received / total;
-            });
+          progress = received / total;
+        });
         print('Downloading end');
         if (Get.isDialogOpen) {
           Get.back(closeOverlays: true);
@@ -43,7 +46,7 @@ class DownloadController extends GetxController {
         Get.snackbar(
           'Downloaded',
           'File has been downloaded to your device.',
-          icon: Icon(Icons.thumb_up_alt_rounded, color: Colors.white),
+          icon: const Icon(Icons.thumb_up_alt_rounded, color: Colors.white),
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
@@ -56,7 +59,7 @@ class DownloadController extends GetxController {
         Get.snackbar(
           'Error',
           'Unable to download file',
-          icon: Icon(Icons.error_outline_rounded, color: Colors.white),
+          icon: const Icon(Icons.error_outline_rounded, color: Colors.white),
           backgroundColor: Colors.red,
           colorText: Colors.white,
         );
@@ -67,66 +70,51 @@ class DownloadController extends GetxController {
   ///This method will get the [path] where the media is to be saved
   Future<void> _getDirectory() async {
     try {
-      if (Platform.isAndroid) {
-        if (await _requestPermission(Permission.storage) &&
-            await _requestPermission(Permission.accessMediaLocation) &&
-            await _requestPermission(Permission.manageExternalStorage)) {
-          _directory = await getExternalStorageDirectory();
+      if (await methondChannel.invokeMethod('getPermission')) {
+        log("Permission Granted in flutter");
 
-          String newPath = "";
-          print(_directory);
+        _directory = await getExternalStorageDirectory();
 
-          // Way 1
-          // List<String> paths = _directory.path.split("/");
-          //
-          // for (int x = 1; x < paths.length; x++) {
-          //   String folder = paths[x];
-          //   if (folder != "Android") {
-          //     newPath += "/" + folder;
-          //   } else {
-          //     break;
-          //   }
-          // }
-          // newPath = newPath + "/Nearlikes";
-          // --------- Way 1 ends ----------
+        String newPath = "";
+        print(_directory);
 
-          // // Way 2
-          newPath = _directory.path + "/Nearlikes";
-          // // --------- Way 2 ends ----------
+        // Way 1
+        List<String> paths = _directory.path.split("/");
 
-          log(newPath);
-          _directory = Directory(newPath);
-          return;
-        } else {
-          Get.snackbar(
-            'Permission Required',
-            'Storage permission is required to store the file',
-            icon: Icon(Icons.thumb_up_alt_rounded, color: Colors.white),
-            backgroundColor: Colors.orange,
-            colorText: Colors.white,
-          );
-          return;
+        for (int x = 1; x < paths.length; x++) {
+          String folder = paths[x];
+          if (folder != "Android") {
+            newPath += "/" + folder;
+          } else {
+            break;
+          }
         }
-      } else if (Platform.isIOS) {
-        if (await _requestPermission(Permission.photos)) {
-          _directory = await getTemporaryDirectory();
-        } else {
-          Get.snackbar(
-            'Permission Required',
-            'Storage permission is required to store the file',
-            icon: Icon(Icons.thumb_up_alt_rounded, color: Colors.white),
-            backgroundColor: Colors.orange,
-            colorText: Colors.white,
-          );
-          return;
-        }
+        newPath = newPath + "/Nearlikes";
+        // --------- Way 1 ends ----------
+
+        // // Way 2
+        // newPath = _directory.path + "/Nearlikes";
+        // // --------- Way 2 ends ----------
+
+        log(newPath);
+        _directory = Directory(newPath);
+        return;
+      } else {
+        Get.snackbar(
+          'Permission Required',
+          'Storage permission is required to store the file',
+          icon: const Icon(Icons.thumb_up_alt_rounded, color: Colors.white),
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
+        return;
       }
     } catch (e) {
       log("Error in getting directory --> $e");
       Get.snackbar(
         'Error',
         'Unable to locate directory',
-        icon: Icon(Icons.error_outline_rounded, color: Colors.white),
+        icon: const Icon(Icons.error_outline_rounded, color: Colors.white),
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -142,7 +130,7 @@ class DownloadController extends GetxController {
       if (result == PermissionStatus.granted) {
         return true;
       }
-      log('${permission} --> ${result}');
+      log('$permission --> $result');
     }
     return false;
   }
@@ -166,14 +154,15 @@ class DownloadingDialog extends StatelessWidget {
           height: size.height.tenPercent,
           child: Center(
             child: Obx(
-                  () => Wrap(
+              () => Wrap(
                 direction: Axis.horizontal,
                 alignment: WrapAlignment.center,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 runSpacing: size.height.onePercent,
                 children: [
                   CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(kSecondaryColor),
                     value: downloadController.progress,
                   ),
                   SizedBox(width: size.width.fivePercent),

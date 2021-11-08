@@ -10,6 +10,7 @@ import 'package:nearlikes/controllers/controllers.dart';
 import 'package:nearlikes/models/get_media.dart';
 
 import 'package:flutter/widgets.dart';
+import 'package:nearlikes/theme.dart';
 import 'package:nearlikes/widgets/video_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -47,39 +48,56 @@ class _MediaFIleState extends State<MediaFIle> {
     final AppBar appBar = AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      iconTheme: IconThemeData(color: kPrimaryColor),
+      iconTheme: const IconThemeData(color: kPrimaryColor),
     );
     return Scaffold(
       appBar: appBar,
-      bottomNavigationBar: GestureDetector(
-        onTap: () async {
-          //     storyController.mediaType == 'image' ? '.jpg' : '.mp4';
-          // String timeStamp = DateTime.now().toString().split(".").first;
-          // String fileName = '${widget.campaign.brand}_$timeStamp$format';
-          // downloadController.downloadMedia(storyController.storyUrl, fileName);
-          await launch(storyController.storyUrl);
-        },
-        child: Container(
-          width: double.infinity,
-          height: 48,
-          margin: EdgeInsets.symmetric(horizontal: size.width * 0.05)
-              .copyWith(bottom: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            gradient: LinearGradient(
-              colors: [
-                kPrimaryColor,
-                kSecondaryColor,
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
+      bottomNavigationBar: Obx(
+        () => GestureDetector(
+          onTap: storyController.isStorySelected
+              ? () async {
+                  String format =
+                      storyController.mediaType == 'image' ? '.jpg' : '.mp4';
+                  String timeStamp = DateTime.now()
+                      .toString()
+                      .split(".")
+                      .first
+                      .split(' ')
+                      .join('_')
+                      .split(':')
+                      .join('-');
+                  String fileName =
+                      '${widget.campaign.brand}_$timeStamp$format';
+                  downloadController.downloadMedia(
+                      storyController.storyUrl, fileName);
+                  // await launch(storyController.storyUrl);
+                }
+              : null,
+          child: Container(
+            width: double.infinity,
+            height: 48,
+            margin: EdgeInsets.symmetric(horizontal: size.width * 0.05)
+                .copyWith(bottom: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              gradient: storyController.isStorySelected
+                  ? const LinearGradient(
+                      colors: [
+                        kPrimaryColor,
+                        kSecondaryColor,
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    )
+                  : null,
+              color: storyController.isStorySelected ? null : kOverlayColor,
             ),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            'Download',
-            style: Theme.of(context).textTheme.headline6.copyWith(
-              color: Colors.white,
+            alignment: Alignment.center,
+            child: Text(
+              'Download',
+              style: Theme.of(context).textTheme.headline6.copyWith(
+                    color: Colors.white,
+                  ),
             ),
           ),
         ),
@@ -96,7 +114,7 @@ class _MediaFIleState extends State<MediaFIle> {
               widget.campaign.brand,
               style: Get.textTheme.headline5.copyWith(color: kPrimaryColor),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             DefaultTabController(
               initialIndex: 0,
               length: 2,
@@ -123,14 +141,14 @@ class _MediaFIleState extends State<MediaFIle> {
                             "----------------------- Listener -----------------------");
                       },
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     Expanded(
                       // -------------------------- Images List -------------------------
                       child: TabBarView(
                         children: [
                           FutureBuilder(
                             future:
-                            getAvailableMedia(id: widget.campaign.ownerId),
+                                getAvailableMedia(id: widget.campaign.ownerId),
                             // stream: _postsController.stream,
                             builder:
                                 (context, AsyncSnapshot<GetMedia> snapshot) {
@@ -146,12 +164,13 @@ class _MediaFIleState extends State<MediaFIle> {
 
                               return ListView.builder(
                                 shrinkWrap: true,
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 // physics: NeverScrollableScrollPhysics(),
                                 itemCount: getMedia.media.length + 1,
                                 itemBuilder: (_, index) {
-                                  if (index == getMedia.media.length)
-                                    return SizedBox(height: 48);
+                                  if (index == getMedia.media.length) {
+                                    return const SizedBox(height: 48);
+                                  }
                                   return GestureDetector(
                                     onTap: () {
                                       storyController.storyUrl =
@@ -171,48 +190,48 @@ class _MediaFIleState extends State<MediaFIle> {
                                     },
                                     child: getMedia.media[index].type == 'image'
                                         ? Container(
-                                      margin: const EdgeInsets.all(16),
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(12),
-                                        ),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Obx(
-                                            () => Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(8),
-                                            border: Border.all(
-                                              color: storyController
-                                                  .isStorySelected &&
-                                                  storyController
-                                                      .selectedIndex ==
-                                                      index
-                                                  ? kBlackColor
-                                                  : Colors.transparent,
+                                            margin: const EdgeInsets.all(16),
+                                            decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(12),
+                                              ),
                                             ),
-                                          ),
-                                          padding:
-                                          const EdgeInsets.all(8),
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                            getMedia.media[index].src,
-                                            progressIndicatorBuilder: (context,
-                                                url,
-                                                downloadProgress) =>
-                                                CircularProgressIndicator(
-                                                  color: kPrimaryColor,
-                                                  value: downloadProgress
-                                                      .progress,
+                                            alignment: Alignment.center,
+                                            child: Obx(
+                                              () => Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color: storyController
+                                                                .isStorySelected &&
+                                                            storyController
+                                                                    .selectedIndex ==
+                                                                index
+                                                        ? kBlackColor
+                                                        : Colors.transparent,
+                                                  ),
                                                 ),
-                                            errorWidget: (context, url,
-                                                error) =>
-                                            const Icon(Icons.error),
-                                          ),
-                                        ),
-                                      ),
-                                    )
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      getMedia.media[index].src,
+                                                  progressIndicatorBuilder: (context,
+                                                          url,
+                                                          downloadProgress) =>
+                                                      CircularProgressIndicator(
+                                                    color: kPrimaryColor,
+                                                    value: downloadProgress
+                                                        .progress,
+                                                  ),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      const Icon(Icons.error),
+                                                ),
+                                              ),
+                                            ),
+                                          )
                                         : const SizedBox.shrink(),
                                   );
                                 },
@@ -224,7 +243,7 @@ class _MediaFIleState extends State<MediaFIle> {
 
                           FutureBuilder(
                             future:
-                            getAvailableMedia(id: widget.campaign.ownerId),
+                                getAvailableMedia(id: widget.campaign.ownerId),
                             builder: (context, AsyncSnapshot snapshot) {
                               if (!snapshot.hasData) {
                                 return const Center(
@@ -244,44 +263,43 @@ class _MediaFIleState extends State<MediaFIle> {
                                   return GestureDetector(
                                     onTap: () {
                                       storyController.storyUrl =
-                                      "${getMedia.media[index].src}";
+                                          getMedia.media[index].src;
                                       // storyController.error = '';
 
                                       print(
                                           "Video onTap --> ${getMedia.media[index].src}");
 
                                       storyController.mediaType =
-                                      "${getMedia.media[index].type}";
+                                          getMedia.media[index].type;
                                       // choice = index;
                                     },
                                     child: getMedia.media[index].type == 'video'
                                         ? Obx(
-                                          () => Container(
-                                        margin: const EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                          const BorderRadius.all(
-                                            Radius.circular(12),
-                                          ),
-                                          border: Border.all(
-                                            color: storyController
-                                                .isStorySelected &&
-                                                storyController
-                                                    .selectedIndex ==
-                                                    index
-                                                ? kBlackColor
-                                                : Colors.transparent,
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: VideoWidget(
-                                          index: index,
-                                          play: true,
-                                          url:
-                                          '${getMedia.media[index].src}',
-                                        ),
-                                      ),
-                                    )
+                                            () => Container(
+                                              margin: const EdgeInsets.all(16),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                  Radius.circular(12),
+                                                ),
+                                                border: Border.all(
+                                                  color: storyController
+                                                              .isStorySelected &&
+                                                          storyController
+                                                                  .selectedIndex ==
+                                                              index
+                                                      ? kBlackColor
+                                                      : Colors.transparent,
+                                                ),
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: VideoWidget(
+                                                index: index,
+                                                play: true,
+                                                url: getMedia.media[index].src,
+                                              ),
+                                            ),
+                                          )
                                         : const SizedBox.shrink(),
                                   );
                                 },
