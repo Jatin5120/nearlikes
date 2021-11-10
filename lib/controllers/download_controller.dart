@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 import 'package:nearlikes/constants/constants.dart';
 
@@ -39,6 +40,7 @@ class DownloadController extends GetxController {
             onReceiveProgress: (received, total) {
           progress = received / total;
         });
+        GallerySaver.saveImage(file.path);
         print('Downloading end');
         if (Get.isDialogOpen) {
           Get.back(closeOverlays: true);
@@ -92,7 +94,7 @@ class DownloadController extends GetxController {
         newPath = newPath + "/Nearlikes";
         // --------- Way 1 ends ----------
 
-        // // Way 2
+        // Way 2
         // newPath = _directory.path + "/Nearlikes";
         // // --------- Way 2 ends ----------
 
