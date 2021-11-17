@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share/share.dart';
-import 'package:nearlikes/theme.dart';
+
+import 'constants/constants.dart';
 
 class Referral extends StatefulWidget {
   final String ref1;
-  Referral({@required this.ref1});
+  const Referral({Key key, @required this.ref1}) : super(key: key);
 
   @override
   _ReferralState createState() => _ReferralState();
@@ -23,21 +24,25 @@ class _ReferralState extends State<Referral> {
         // backgroundColor: Color(0xfffE5E5E5),
         body: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal:40,vertical: 70),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 70),
           child: Column(
             children: [
               Align(
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                     },
-                    child: Icon(Icons.arrow_back,color: kPrimaryOrange,size: 30,)),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: kPrimaryColor,
+                      size: 30,
+                    )),
               ),
-              // SizedBox(
+              // const SizedBox(
               //   height: size.height * 0.10,
               // ),
-              Spacer(),
+              const Spacer(),
               // Text(
               //   'Refer your friends',
               //   style: TextStyle(fontSize: 30),
@@ -48,13 +53,13 @@ class _ReferralState extends State<Referral> {
                     fontWeight: FontWeight.w600,
                     color: kFontColor,
                   )),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               SizedBox(
                   height: size.height * 0.4,
                   child: Image.asset('assets/pic2.jpeg')),
-              Spacer(
+              const Spacer(
                 flex: 1,
               ),
               Text(
@@ -65,7 +70,7 @@ class _ReferralState extends State<Referral> {
                   color: kFontColor,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Text(
@@ -76,17 +81,17 @@ class _ReferralState extends State<Referral> {
                   color: kFontColor,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               GestureDetector(
                 onLongPress: () {
-                  Clipboard.setData(new ClipboardData(text: widget.ref1));
+                  Clipboard.setData(ClipboardData(text: widget.ref1));
                   // key.currentState.showSnackBar(new SnackBar(
                   //   content: new Text("Copied to Clipboard"),
                   // ));
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Copied to clipboard')));
+                      const SnackBar(content: Text('Copied to clipboard')));
                 },
                 child: DottedBorder(
                   color: Colors.red,
@@ -96,7 +101,7 @@ class _ReferralState extends State<Referral> {
                     height: 30,
                     // decoration:
                     //     BoxDecoration(border: Border.all(style: BorderStyle.solid)),
-                    child: Text('${widget.ref1}',
+                    child: Text(widget.ref1,
                         style: GoogleFonts.montserrat(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
@@ -106,22 +111,22 @@ class _ReferralState extends State<Referral> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Container(
-                decoration: BoxDecoration(
-                    color: kPrimaryOrange,
+                decoration: const BoxDecoration(
+                    color: kPrimaryColor,
                     borderRadius: BorderRadius.all(Radius.circular(12))),
                 child: IconButton(
                   color: Colors.white,
                   onPressed: () {
                     onshare(context);
                   },
-                  icon: Icon(Icons.share),
+                  icon: const Icon(Icons.share),
                 ),
               ),
-              Spacer()
+              const Spacer()
             ],
           ),
         ),

@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:nearlikes/SuccessSample.dart';
-import 'package:nearlikes/home_page.dart';
-import 'package:nearlikes/page_guide.dart';
-import 'package:nearlikes/theme.dart';
-import 'package:confetti/confetti.dart';
+import 'package:get/get.dart';
+import 'package:nearlikes/Services/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:scratcher/widgets.dart';
 import 'dart:convert';
-import 'package:grouped_checkbox/grouped_checkbox.dart';
-import 'package:url_launcher/url_launcher.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import 'constants/constants.dart';
+
 class ChooseInterests extends StatefulWidget {
-  final ig_details,name,ig_userId,age,location,phoneNumber;
-  ChooseInterests({this.age,this.location,this.ig_details,this.name,this.ig_userId,this.phoneNumber});
+  final String igDetails, name, igUserId, age, location, phoneNumber;
+  const ChooseInterests({
+    Key key,
+    this.age,
+    this.location,
+    this.igDetails,
+    this.name,
+    this.igUserId,
+    this.phoneNumber,
+  }) : super(key: key);
   @override
   _ChooseInterestsState createState() => _ChooseInterestsState();
 }
+
 bool _food = false;
 bool _travel = false;
 bool _fashion = false;
 bool _other = false;
-final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 void showInSnackBar(String value) {
-  _scaffoldKey.currentState.showSnackBar(new SnackBar(content: new Text(value, style: GoogleFonts.montserrat(
-    fontSize:13,
-    fontWeight: FontWeight.w500,
-    color: Colors.white,
-  ),textAlign: TextAlign.center,)));
+  Get.snackbar('', value);
 }
-
 
 // List<String> foodDrink = [
 //   "North Indian",
@@ -100,51 +100,48 @@ List<String> selectedItemList;
 class _ChooseInterestsState extends State<ChooseInterests> {
   var customer_id;
 
-
-  uploadUserData(tag)async{
-   // String accesstoken='EAAG9VBauCocBALeqX0Owqm8ZCibZAb2UKe0vTL0VjRvCt7aNbLgab6kGh6AtLinwiWnz33d2A14CUX8ZB2G2BoGLMjQsr3hShBSN0FZBG6H1sQZCPumi2ZBR5R9hX6jVX2ZAl5mraAeZBCTy9a89nEyP9yUpkS4hALD5oYQakkugDTxZBobgH858ZC';
-    var url = 'https://nearlikes.com/v1/api/client/add';
-    var body={
-
+  uploadUserData(tag) async {
+    // String accesstoken='EAAG9VBauCocBALeqX0Owqm8ZCibZAb2UKe0vTL0VjRvCt7aNbLgab6kGh6AtLinwiWnz33d2A14CUX8ZB2G2BoGLMjQsr3hShBSN0FZBG6H1sQZCPumi2ZBR5R9hX6jVX2ZAl5mraAeZBCTy9a89nEyP9yUpkS4hALD5oYQakkugDTxZBobgH858ZC';
+    var body = {
       "phone": "+91${widget.phoneNumber}", // should contain +91,
 
       "tag": tag
     };
-    var response= await  http.post(Uri.parse(url),
-        headers:{"Content-Type": "application/json"},
-        body: json.encode(body));
+    var response = await http.post(Uri.parse(kAddUser),
+        headers: {"Content-Type": "application/json"}, body: json.encode(body));
     print(response.statusCode);
-
 
     return response.statusCode;
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: ()async {
+      onWillPop: () async {
         return (await showDialog(
-          context: context,
-          builder: (context) => new AlertDialog(
-            title: new Text('Cannot go back at this stage!'),
-            //content: Text('Select at least one from each category to continue.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: new Text('OK'),
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Cannot go back at this stage!'),
+                //content: const Text('Select at least one from each category to continue.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('OK'),
+                  ),
+                  // TextButton(
+                  //   onPressed: () => Navigator.of(context).pop(true),
+                  //   child: new const Text('Yes'),
+                  // ),
+                ],
               ),
-              // TextButton(
-              //   onPressed: () => Navigator.of(context).pop(true),
-              //   child: new Text('Yes'),
-              // ),
-            ],
-          ),
-        )) ?? false;
+            )) ??
+            false;
       },
       child: Scaffold(
         key: _scaffoldKey,
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal:40,vertical: 90),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 90),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -154,98 +151,125 @@ class _ChooseInterestsState extends State<ChooseInterests> {
                 //       onTap: (){
                 //         Navigator.pop(context);
                 //       },
-                //       child: Icon(Icons.arrow_back,color: kPrimaryOrange,size: 30,)),
+                //       child: Icon(Icons.arrow_back,color: kPrimaryColor,size: 30,)),
                 // ),
 
+                //const SizedBox(height: 10,),
+                Center(
+                    child:
+                        Image.asset('assets/logo.png', width: 45, height: 45)),
+                const SizedBox(
+                  height: 25,
+                ),
+                Center(
+                  child: Text(
+                    "Tell us your interests",
+                    style: GoogleFonts.montserrat(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w600,
+                      color: kFontColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: Text(
+                    "Add your interests so we can begin to personalize your suggestions.",
+                    style: GoogleFonts.montserrat(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: kDarkGrey,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Center(
+                  child: Text(
+                    "Please select atleast one category",
+                    style: GoogleFonts.montserrat(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: kPrimaryColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
 
-                //SizedBox(height: 10,),
-                Center(child: Image.asset('assets/logo.png',width:45,height:45)),
-                SizedBox(height: 25,),
-                Center(
-                  child: Text("Tell us your interests",style: GoogleFonts.montserrat(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
-                    color: kFontColor,
-                  ),textAlign: TextAlign.center,),
+                const SizedBox(
+                  height: 30,
                 ),
-                SizedBox(height: 20,),
-                Center(
-                  child: Text("Add your interests so we can begin to personalize your suggestions.",style: GoogleFonts.montserrat(
-                    fontSize:13,
-                    fontWeight: FontWeight.w400,
-                    color: kDarkGrey,
-                  ),textAlign: TextAlign.center,),
-                ),
-                SizedBox(height: 15,),
-                Center(
-                  child: Text("Please select atleast one category",style: GoogleFonts.montserrat(
-                    fontSize:13,
+                Text(
+                  "  CATEGORIES",
+                  style: GoogleFonts.montserrat(
+                    fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: kPrimaryOrange,
-                  ),textAlign: TextAlign.center,),
+                    color: kFontColor,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-
-                SizedBox(height: 30,),
-                Text("  CATEGORIES",style: GoogleFonts.montserrat(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  color: kFontColor,
-                ),textAlign: TextAlign.center,),
-                SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   children: [
                     Checkbox(
                         value: _food,
-                        activeColor: kPrimaryPink,
+                        activeColor: kSecondaryColor,
                         checkColor: Colors.white,
-                        onChanged: (bool changed){
+                        onChanged: (bool changed) {
                           setState(() {
                             _food = changed;
                           });
                         }),
-                    Text('Food')
+                    const Text('Food')
                   ],
                 ),
                 Row(
                   children: [
                     Checkbox(
                         value: _travel,
-                        activeColor: kPrimaryPink,
+                        activeColor: kSecondaryColor,
                         checkColor: Colors.white,
-                        onChanged: (bool changed){
+                        onChanged: (bool changed) {
                           setState(() {
                             _travel = changed;
                           });
                         }),
-                    Text('Travel')
+                    const Text('Travel')
                   ],
                 ),
                 Row(
                   children: [
                     Checkbox(
                         value: _fashion,
-                        activeColor: kPrimaryPink,
+                        activeColor: kSecondaryColor,
                         checkColor: Colors.white,
-                        onChanged: (bool changed){
+                        onChanged: (bool changed) {
                           setState(() {
                             _fashion = changed;
                           });
                         }),
-                    Text('Fashion')
+                    const Text('Fashion')
                   ],
                 ),
                 Row(
                   children: [
                     Checkbox(
                         value: _other,
-                        activeColor: kPrimaryPink,
+                        activeColor: kSecondaryColor,
                         checkColor: Colors.white,
-                        onChanged: (bool changed){
+                        onChanged: (bool changed) {
                           setState(() {
                             _other = changed;
                           });
                         }),
-                    Text('Other')
+                    const Text('Other')
                   ],
                 ),
                 // GroupedCheckbox(
@@ -259,15 +283,15 @@ class _ChooseInterestsState extends State<ChooseInterests> {
                 //     },
                 //     orientation: CheckboxOrientation.VERTICAL,
                 //     checkColor: Colors.white,
-                //     activeColor: kPrimaryPink
+                //     activeColor: kSecondaryColor
                 // ),
-                // SizedBox(height: 30,),
+                // const SizedBox(height: 30,),
                 // Text("  ENTERTAINMENT",style: GoogleFonts.montserrat(
                 //   fontSize: 15,
                 //   fontWeight: FontWeight.w500,
                 //   color: kFontColor,
                 // ),textAlign: TextAlign.center,),
-                // SizedBox(height: 10,),
+                // const SizedBox(height: 10,),
                 // GroupedCheckbox(
                 //     itemList: entertainment,
                 //     checkedItemList: checkedItemList,
@@ -279,15 +303,15 @@ class _ChooseInterestsState extends State<ChooseInterests> {
                 //     },
                 //     orientation: CheckboxOrientation.VERTICAL,
                 //     checkColor: Colors.white,
-                //     activeColor: kPrimaryPink
+                //     activeColor: kSecondaryColor
                 // ),
-                // SizedBox(height: 30,),
+                // const SizedBox(height: 30,),
                 // Text("  FASHION AND BEAUTY",style: GoogleFonts.montserrat(
                 //   fontSize: 15,
                 //   fontWeight: FontWeight.w500,
                 //   color: kFontColor,
                 // ),textAlign: TextAlign.center,),
-                // SizedBox(height: 10,),
+                // const SizedBox(height: 10,),
                 // GroupedCheckbox(
                 //     itemList: fashionBeauty,
                 //     checkedItemList: checkedItemList,
@@ -299,15 +323,15 @@ class _ChooseInterestsState extends State<ChooseInterests> {
                 //     },
                 //     orientation: CheckboxOrientation.VERTICAL,
                 //     checkColor: Colors.white,
-                //     activeColor: kPrimaryPink
+                //     activeColor: kSecondaryColor
                 // ),
-                // SizedBox(height: 30,),
+                // const SizedBox(height: 30,),
                 // Text("  HEALTH AND WELL-BEING",style: GoogleFonts.montserrat(
                 //   fontSize: 15,
                 //   fontWeight: FontWeight.w500,
                 //   color: kFontColor,
                 // ),textAlign: TextAlign.center,),
-                // SizedBox(height: 10,),
+                // const SizedBox(height: 10,),
                 // GroupedCheckbox(
                 //     itemList:health,
                 //     checkedItemList: checkedItemList,
@@ -319,15 +343,15 @@ class _ChooseInterestsState extends State<ChooseInterests> {
                 //     },
                 //     orientation: CheckboxOrientation.VERTICAL,
                 //     checkColor: Colors.white,
-                //     activeColor: kPrimaryPink
+                //     activeColor: kSecondaryColor
                 // ),
-                // SizedBox(height: 30,),
+                // const SizedBox(height: 30,),
                 // Text("  HOBBIES AND ACTIVITIES",style: GoogleFonts.montserrat(
                 //   fontSize: 15,
                 //   fontWeight: FontWeight.w500,
                 //   color: kFontColor,
                 // ),textAlign: TextAlign.center,),
-                // SizedBox(height: 10,),
+                // const SizedBox(height: 10,),
                 // GroupedCheckbox(
                 //     itemList: hobbies,
                 //     checkedItemList: checkedItemList,
@@ -339,15 +363,15 @@ class _ChooseInterestsState extends State<ChooseInterests> {
                 //     },
                 //     orientation: CheckboxOrientation.VERTICAL,
                 //     checkColor: Colors.white,
-                //     activeColor: kPrimaryPink
+                //     activeColor: kSecondaryColor
                 // ),
-                // SizedBox(height: 30,),
+                // const SizedBox(height: 30,),
                 // Text("  ELECTRONICS",style: GoogleFonts.montserrat(
                 //   fontSize: 15,
                 //   fontWeight: FontWeight.w500,
                 //   color: kFontColor,
                 // ),textAlign: TextAlign.center,),
-                // SizedBox(height: 10,),
+                // const SizedBox(height: 10,),
                 // GroupedCheckbox(
                 //     itemList: electronics,
                 //     checkedItemList: checkedItemList,
@@ -359,15 +383,15 @@ class _ChooseInterestsState extends State<ChooseInterests> {
                 //     },
                 //     orientation: CheckboxOrientation.VERTICAL,
                 //     checkColor: Colors.white,
-                //     activeColor: kPrimaryPink
+                //     activeColor: kSecondaryColor
                 // ),
-                // SizedBox(height: 30,),
+                // const SizedBox(height: 30,),
                 // Text("  AUTOMOBILE",style: GoogleFonts.montserrat(
                 //   fontSize: 15,
                 //   fontWeight: FontWeight.w500,
                 //   color: kFontColor,
                 // ),textAlign: TextAlign.center,),
-                // SizedBox(height: 10,),
+                // const SizedBox(height: 10,),
                 // GroupedCheckbox(
                 //     itemList: automobile,
                 //     checkedItemList: checkedItemList,
@@ -379,39 +403,41 @@ class _ChooseInterestsState extends State<ChooseInterests> {
                 //     },
                 //     orientation: CheckboxOrientation.VERTICAL,
                 //     checkColor: Colors.white,
-                //     activeColor: kPrimaryPink
+                //     activeColor: kSecondaryColor
                 // ),
-                SizedBox(height: 20,),
-
+                const SizedBox(
+                  height: 20,
+                ),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 0),
                   child: InkWell(
-                    onTap: ()async{
+                    onTap: () async {
                       print('1');
-                      if(_food == false && _travel == false && _fashion == false && _other == false){
+                      if (_food == false &&
+                          _travel == false &&
+                          _fashion == false &&
+                          _other == false) {
                         print('yess');
                         showInSnackBar('Please select atleast one category!');
-
-                      }
-                      else{
-                    //    uploadUserData(tag)
+                      } else {
+                        //    uploadUserData(tag)
                       }
                       // if((selectedItemList==null)||(selectedItemList1==null)||(selectedItemList2==null)||(selectedItemList3==null)||(selectedItemList4==null)||(selectedItemList5==null)||(selectedItemList6==null))
                       // {
                       //  return showDialog(
                       //    context: context,
                       //    builder: (context) => new AlertDialog(
-                      //      title: new Text('Select at least one category '),
-                      //      content: Text('Please do select one sub category from each category to continue'),
+                      //      title: new const Text('Select at least one category '),
+                      //      content: const Text('Please do select one sub category from each category to continue'),
                       //      actions: <Widget>[
                       //        TextButton(
                       //          onPressed: () => Navigator.of(context).pop(false),
-                      //          child: new Text('OK'),
+                      //          child: new const Text('OK'),
                       //        ),
                       //        // TextButton(
                       //        //   onPressed: () => Navigator.of(context).pop(true),
-                      //        //   child: new Text('Yes'),
+                      //        //   child: new const Text('Yes'),
                       //        // ),
                       //      ],
                       //    ),
@@ -432,64 +458,83 @@ class _ChooseInterestsState extends State<ChooseInterests> {
                       // }
                     },
                     child: Container(
-                        height: 50,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: LinearGradient(
-                              begin: Alignment.topRight,
-                              end: Alignment.bottomLeft,
-                              colors: [
-                                kPrimaryPink,
-                                kPrimaryOrange,
-                              ],
-                            )
-
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: const LinearGradient(
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomLeft,
+                            colors: [
+                              kSecondaryColor,
+                              kPrimaryColor,
+                            ],
+                          )),
+                      child: Center(
+                        child: Text(
+                          'Next',
+                          style: GoogleFonts.montserrat(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Colors.white,
+                            //letterSpacing: 1
+                          ),
                         ),
-                        child: Center(
-                          child:  Text('Next',
-                              style: GoogleFonts.montserrat(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                color: Colors.white,
-                                //letterSpacing: 1
-                              )),
-                        )),
+                      ),
+                    ),
                   ),
                 ),
-                SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("NearLikes’s  ",style: GoogleFonts.montserrat(
-                        fontSize:13,
-                        fontWeight: FontWeight.w400,
-                        color: kDarkGrey,
-                      ),textAlign: TextAlign.center,),
-                      GestureDetector(
-                        onTap: _launchPrivacy,
-                        child: Text("Privacy",style: GoogleFonts.montserrat(
-                          decoration: TextDecoration.underline,
-                          fontSize:13,
+                      Text(
+                        "NearLikes’s  ",
+                        style: GoogleFonts.montserrat(
+                          fontSize: 13,
                           fontWeight: FontWeight.w400,
-                          color: Color(0xff5186F2),
-                        ),textAlign: TextAlign.center,),
+                          color: kDarkGrey,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      Text("and  ",style: GoogleFonts.montserrat(
-                        fontSize:13,
-                        fontWeight: FontWeight.w400,
-                        color: kDarkGrey,
-                      ),textAlign: TextAlign.center,),
                       GestureDetector(
-                        onTap: _launchTerms,
-                        child: Text("Terms",style: GoogleFonts.montserrat(
-                          decoration: TextDecoration.underline,
-                          fontSize:13,
+                        onTap: () => UrlLauncher.openLink(url: kPrivacy),
+                        child: Text(
+                          "Privacy",
+                          style: GoogleFonts.montserrat(
+                            decoration: TextDecoration.underline,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: kBlueColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Text(
+                        "and  ",
+                        style: GoogleFonts.montserrat(
+                          fontSize: 13,
                           fontWeight: FontWeight.w400,
-                          color: Color(0xff5186F2),
-                        ),textAlign: TextAlign.center,),
+                          color: kDarkGrey,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      GestureDetector(
+                        onTap: () => UrlLauncher.openLink(url: kTerms),
+                        child: Text(
+                          "Terms",
+                          style: GoogleFonts.montserrat(
+                            decoration: TextDecoration.underline,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: kBlueColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ],
                   ),
@@ -498,23 +543,8 @@ class _ChooseInterestsState extends State<ChooseInterests> {
             ),
           ),
         ),
-      ),);
-  }
-  _launchPrivacy() async {
-    const url ="https://nearlikes.com/privacy_policy.html";
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-  _launchTerms() async {
-    const url ="https://nearlikes.com/termsofservice.html";
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+      ),
+    );
   }
 
 // void showInSnackBar(String value) {

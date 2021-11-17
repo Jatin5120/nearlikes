@@ -22,8 +22,7 @@ class TermsAndConditions extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         TapHandler(
-          onTap: () => UrlLauncher.openLink(
-              url: "https://nearlikes.com/privacy_policy.html"),
+          onTap: () => UrlLauncher.openLink(url: kPrivacy2),
           child: Text(
             "Privacy",
             style: GoogleFonts.montserrat(
@@ -43,8 +42,7 @@ class TermsAndConditions extends StatelessWidget {
           ),
         ),
         TapHandler(
-          onTap: () => UrlLauncher.openLink(
-              url: "https://nearlikes.com/termsofservice.html"),
+          onTap: () => UrlLauncher.openLink(url: kTerms2),
           child: Text(
             "Terms",
             style: GoogleFonts.montserrat(

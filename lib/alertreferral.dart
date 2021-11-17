@@ -160,21 +160,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:nearlikes/constants/colors.dart';
+import 'package:nearlikes/constants/constants.dart';
 import 'package:nearlikes/page_guide.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 String phonenumber;
 String customerId;
 
 Future<Refer> createRefer(String code, String customerId) async {
-
-
-  var body = {
-    "id":"$customerId",
-    "code": "$code"};
+  var body = {"id": customerId, "code": code};
   final response = await http.post(
-    Uri.parse('https://nearlikes.com/v1/api/client/referal'),
+    Uri.parse(kReferal),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -194,7 +190,9 @@ class Refer {
   Refer({@required this.title});
 
   factory Refer.fromJson(Map<String, dynamic> json) {
-    return Refer(title: json['type'],);
+    return Refer(
+      title: json['type'],
+    );
   }
 }
 
@@ -212,13 +210,13 @@ class _MyAlertDialogState extends State<MyAlertDialog> {
   final TextEditingController _controller = TextEditingController();
   Future<Refer> _futureRefer;
 
-  getUserData()async{
+  getUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-   phonenumber=   prefs.getString('phonenumber');
+    phonenumber = prefs.getString('phonenumber');
     var body = {"phone": "+91$phonenumber"};
 
     final response = await http.post(
-      Uri.parse('https://nearlikes.com/v1/api/client/getid'),
+      Uri.parse(kGetId),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -302,7 +300,8 @@ class _MyAlertDialogState extends State<MyAlertDialog> {
                       onPressed: () {
                         if (this.mounted)
                           setState(() {
-                            _futureRefer = createRefer(_controller.text,customerId);
+                            _futureRefer =
+                                createRefer(_controller.text, customerId);
                           });
                       },
                     ),
@@ -347,23 +346,21 @@ class _MyAlertDialogState extends State<MyAlertDialog> {
                   SnackBar(content: Text('Voila! Referral code is correct')));
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => PageGuide(
-                    phoneNumber: widget.phonenumber,
-                  )));
+                        phoneNumber: widget.phonenumber,
+                      )));
             });
             print(snapshot.data.title);
-          }
-          else{
+          } else {
             Future.delayed(Duration.zero, () async {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Incorrect Referral Code. Try Again!')));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Incorrect Referral Code. Try Again!')));
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => MyAlertDialog(
-                    phonenumber: widget.phonenumber,
-                  )));
+                        phonenumber: widget.phonenumber,
+                      )));
             });
             print(snapshot.data.title);
           }
-
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
@@ -372,5 +369,3 @@ class _MyAlertDialogState extends State<MyAlertDialog> {
     );
   }
 }
-
-

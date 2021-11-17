@@ -5,11 +5,10 @@ import 'package:confetti/confetti.dart';
 import 'package:get/get.dart';
 import 'package:nearlikes/home_page.dart';
 import 'package:nearlikes/instructionPost.dart';
-import 'package:nearlikes/link_UPI.dart';
+import 'package:nearlikes/link_upi.dart';
 import 'package:nearlikes/models/get_customer.dart';
 import 'package:nearlikes/page_guide.dart';
 import 'package:nearlikes/register.dart';
-import 'package:nearlikes/theme.dart';
 import 'package:nearlikes/widgets/loading_dialog.dart';
 import 'package:scratcher/widgets.dart';
 import 'package:nearlikes/models/checkaddedstry.dart';
@@ -44,12 +43,11 @@ bool videoinit = false;
 String cashbackvalue;
 Customer _getCustomer;
 StreamController _campaignController;
-bool  upi=false;
+bool upi = false;
 String cashbackId;
 
 VideoPlayerController _controller;
 Future<void> _initializeVideoPlayerFuture;
-
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -81,14 +79,11 @@ StreamController _postsController;
 
 Future<GetMedia> getAvailableMedia({@required String id}) async {
   print('inside get media');
-
-  //const String apiUrl = "https://nearlikes.com/v1/api/client/get/media";
-  const String apiUrl = "https://api.nearlikes.com/v1/api/client/get/media";
   var body = {
     "id": id,
   };
   final response = await http.post(
-    Uri.parse(apiUrl),
+    Uri.parse(kGetMedia),
     headers: {"Content-Type": "application/json"},
     body: json.encode(body),
   );
@@ -145,7 +140,7 @@ Future<dynamic> checkstry(String instapgid) async {
   http.Response response = await http.get(Uri.parse(api));
 
   final String responseString = response.body;
-   print('the response of fb body is : ${response.body}');
+  print('the response of fb body is : ${response.body}');
   try {
     _getStory = getStryFromJson(responseString);
     return _getStory;
@@ -187,9 +182,7 @@ checkstryId(List stryids, id, campaignId, customerId) async {
   print('the user_acc_id ${userAccId.toString()}');
   print('the id is $id');
   print('the stryId $stryids');
-
-  const url =
-      "https://nearlikes.com/v1/api/client/add/story"; //owner id should exist & campaign_id should exist
+//owner id should exist & campaign_id should exist
   var body = {
     "id": "$campaignId", //campegien id
     "user": accesstoken,
@@ -203,31 +196,34 @@ checkstryId(List stryids, id, campaignId, customerId) async {
   // "user": "EAAG9VBauCocBALeqX0Owqm8ZCibZAb2UKe0vTL0VjRvCt7aNbLgab6kGh6AtLinwiWnz33d2A14CUX8ZB2G2BoGLMjQsr3hShBSN0FZBG6H1sQZCPumi2ZBR5R9hX6jVX2ZAl5mraAeZBCTy9a89nEyP9yUpkS4hALD5oYQakkugDTxZBobgH858ZC",
   // "ownerId": "610d685f705f995ffd38e109"
   // };
-  var response = await http.post(Uri.parse(url),
-      body: json.encode(body), headers: {"Content-Type": "application/json"});
+  var response = await http.post(
+    Uri.parse(kAddStory),
+    body: json.encode(body),
+    headers: {"Content-Type": "application/json"},
+  );
   print(response.statusCode);
   print('======');
   print(response.body);
-
 
   if (response.statusCode == 200) //update business owners about the stry
   {
     var decoded = json.decode(response.body);
 
     cashback = decoded['cashback'];
-    cashbackId=decoded['id'];
+    cashbackId = decoded['id'];
     print('the cashback is $cashback');
     print("..in..business $id");
     print('the cashbackId is $cashbackId');
-
-    String url2 =
-        "https://nearlikes.com/v1/api/client/add/association"; //coustmer id should exist
+    //coustmer id should exist
     var body = {
       "id": "$customerId", // id of user while signing in
       "data": "$id" //  owner id from campeign list  whose story is shared
     };
-    var response2 = await http.post(Uri.parse(url2),
-        body: json.encode(body), headers: {"Content-Type": "application/json"});
+    var response2 = await http.post(
+      Uri.parse(kAddAssociation),
+      body: json.encode(body),
+      headers: {"Content-Type": "application/json"},
+    );
     print(response2.body);
 
     return 200;
@@ -244,7 +240,8 @@ Future<String> addStory(String url) async {
     var documentDirectory = await getApplicationDocumentsDirectory();
     File file = File(join(documentDirectory.path, 'nearlikes.mp4'));
     file.writeAsBytesSync(response.bodyBytes);
-    return await SocialShare.shareInstagramStory(file.path,backgroundBottomColor: "#D6F9F9",backgroundTopColor: "#D6F9F9");
+    return await SocialShare.shareInstagramStory(file.path,
+        backgroundBottomColor: "#D6F9F9", backgroundTopColor: "#D6F9F9");
   } else {
     var response = await http.get(Uri.parse(url));
     var documentDirectory = await getApplicationDocumentsDirectory();
@@ -287,7 +284,7 @@ class _BrandStoriesState extends State<BrandStories>
     var body = {"phone": "+91$phonenumber"};
 
     final response = await http.post(
-      Uri.parse('https://nearlikes.com/v1/api/client/getid'),
+      Uri.parse(kGetId),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -312,9 +309,9 @@ class _BrandStoriesState extends State<BrandStories>
     if (customerId == null) {
       print('test');
       getCustomerId(phonenumber);
+    } else {
+      getCustomerupiID(customerid: customerId);
     }
-    else
-    getCustomerupiID(customerid: customerId);
     //else getCustomer(customerId);
   }
 
@@ -322,10 +319,12 @@ class _BrandStoriesState extends State<BrandStories>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var phonenumber1 = prefs.getString('phonenumber');
     print('the phonenumber for instaId is $phonenumber1');
-    const url = "https://nearlikes.com/v1/api/client/pid";
     var body = {"phone": "+91$phonenumber1"};
-    var response = await http.post(Uri.parse(url),
-        body: json.encode(body), headers: {"Content-Type": "application/json"});
+    var response = await http.post(
+      Uri.parse(kPid),
+      body: json.encode(body),
+      headers: {"Content-Type": "application/json"},
+    );
     print('the instapgid is ${response.body}');
     print(response.statusCode);
     setState(() {
@@ -354,9 +353,8 @@ class _BrandStoriesState extends State<BrandStories>
   checkMaxStry() async {
     print('inside max check stry');
     print(customerId);
-    const url = "https://nearlikes.com/v1/api/client/story/check";
-    var body = {"id": "$customerId"};
-    var response = await http.post(Uri.parse(url),
+    var body = {"id": customerId};
+    var response = await http.post(Uri.parse(kCheckStory),
         body: json.encode(body), headers: {"Content-Type": "application/json"});
     print('jesus');
     print(response.body);
@@ -376,7 +374,7 @@ class _BrandStoriesState extends State<BrandStories>
   void initState() {
     // _campaignController = new StreamController();
     //loadStory();
-   // checkstry("17841447410700405");
+    // checkstry("17841447410700405");
     print('asasasas');
     print(widget.brand);
     print(widget.id);
@@ -422,15 +420,11 @@ class _BrandStoriesState extends State<BrandStories>
   }
 
   Future<Customer> getCustomerupiID({customerid}) async {
-
     print(".....");
     print('inside the getcustomerId upi $customerid');
-    final String apiUrl = "https://nearlikes.com/v1/api/client/own/fetch";
-    var body = {
-      "id" : "$customerid"
-    };
+    var body = {"id": "$customerid"};
     final response = await http.post(
-      Uri.parse(apiUrl),
+      Uri.parse(kGetCustomer),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -441,11 +435,11 @@ class _BrandStoriesState extends State<BrandStories>
 
     print(responseString);
     _getCustomer = customerFromJson(responseString);
-    if( _getCustomer.customer.upi!=null)
-    {print('upi is true');
-    setState(() {
-      upi=true;
-    });
+    if (_getCustomer.customer.upi != null) {
+      print('upi is true');
+      setState(() {
+        upi = true;
+      });
     }
     return _getCustomer;
   }
@@ -455,7 +449,8 @@ class _BrandStoriesState extends State<BrandStories>
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
-  void showAlertdialog({ String title,  String content}) {
+
+  void showAlertdialog({String title, String content}) {
     Get.dialog(AlertDialog(
       title: Text(title),
       content: Text(content),
@@ -468,6 +463,7 @@ class _BrandStoriesState extends State<BrandStories>
       ],
     ));
   }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -512,177 +508,174 @@ class _BrandStoriesState extends State<BrandStories>
             ),
             child: InkWell(
               onTap: () async {
-               if(mediaType!='image'){
-               await  _controller.pause();
-                 print('video function');
-               }
-               if (storyController.isStorySelected) {
-                 int statusCode = await checkMaxStry();
+                if (mediaType != 'image') {
+                  await _controller.pause();
+                  print('video function');
+                }
+                if (storyController.isStorySelected) {
+                  int statusCode = await checkMaxStry();
 
-                 print('the maxstry is $statusCode');
+                  print('the maxstry is $statusCode');
 
-                 if (statusCode == 200) {
-                   return showDialog(
-                     context: _scaffoldKey.currentContext,
-                     builder: (context) {
-                       return AlertDialog(
-                         title: Text(widget.brand),
-                         content: Column(
-                           mainAxisSize: MainAxisSize.min,
-                           children: [
-                             Text(
-                               widget.brandMoto,
-                             ),
-                             SizedBox(height: size.height.twoPercent),
-                             Text(
-                               'Note: The statement will be copied to your clipboard. Be sure to paste the statement.',
-                               style: Get.textTheme.subtitle2,
-                             )
-                           ],
-                         ),
-                         actions: [
-                           ElevatedButton(
-                             child: const Text('Cancel'),
-                             onPressed: () {
-                               Navigator.pop(context);
-                             },
-                           ),
-                           ElevatedButton(
-                             child: const Text('Ok'),
-                             onPressed: () async {
-                               final String statement =
-                                   caption + widget.brandTag;
+                  if (statusCode == 200) {
+                    return showDialog(
+                      context: _scaffoldKey.currentContext,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text(widget.brand),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                widget.brandMoto,
+                              ),
+                              SizedBox(height: size.height.twoPercent),
+                              Text(
+                                'Note: The statement will be copied to your clipboard. Be sure to paste the statement.',
+                                style: Get.textTheme.subtitle2,
+                              )
+                            ],
+                          ),
+                          actions: [
+                            ElevatedButton(
+                              child: const Text('Cancel'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ElevatedButton(
+                              child: const Text('Ok'),
+                              onPressed: () async {
+                                final String statement =
+                                    caption + widget.brandTag;
 
-                               await SocialShare.copyToClipboard(statement);
+                                await SocialShare.copyToClipboard(statement);
 
-                               storyController.startTime = DateTime.now();
-                               storyController.isAppOpen = false;
+                                storyController.startTime = DateTime.now();
+                                storyController.isAppOpen = false;
 
-                               String response =
-                               await addStory(storyController.storyUrl);
+                                String response =
+                                    await addStory(storyController.storyUrl);
 
-                               print('the response is $response');
+                                print('the response is $response');
 
-                               Navigator.pop(context);
+                                Navigator.pop(context);
 
-                               Get.dialog(
-                                 const LoadingDialog.withText(
-                                   'Waiting for you to come back',
-                                 ),
-                                 barrierDismissible: false,
-                               );
+                                Get.dialog(
+                                  const LoadingDialog.withText(
+                                    'Waiting for you to come back',
+                                  ),
+                                  barrierDismissible: false,
+                                );
 
-                               while (!storyController.isAppOpen) {
-                                 await Future.delayed(
-                                   const Duration(seconds: 2),
-                                       () async {},
-                                 );
-                                 print("Not in App");
-                               }
+                                while (!storyController.isAppOpen) {
+                                  await Future.delayed(
+                                    const Duration(seconds: 2),
+                                    () async {},
+                                  );
+                                  print("Not in App");
+                                }
 
-                               Get.back();
+                                Get.back();
 
-                               print("Here");
+                                print("Here");
 
-                               Get.dialog(
-                                 const LoadingDialog.withText(
-                                   'Please wait while we are validating',
-                                 ),
-                                 barrierDismissible: false,
-                               );
+                                Get.dialog(
+                                  const LoadingDialog.withText(
+                                    'Please wait while we are validating',
+                                  ),
+                                  barrierDismissible: false,
+                                );
 
-                               if (response == 'success') {
-                                 _mockCheckForSession(mediaType).then(
-                                       (value) async {
-                                     var response =
-                                     await checkstry(instaPgId);
-                                     if (response == 'error') {
-                                       showAlertdialog(
-                                         title: 'Error Occured',
-                                         content: 'Post story and try again',
-                                       );
+                                if (response == 'success') {
+                                  _mockCheckForSession(mediaType).then(
+                                    (value) async {
+                                      var response = await checkstry(instaPgId);
+                                      if (response == 'error') {
+                                        showAlertdialog(
+                                          title: 'Error Occured',
+                                          content: 'Post story and try again',
+                                        );
 
-                                       if (Get.isDialogOpen) {
-                                         Get.back();
-                                       }
-                                       Navigator.pop(context);
-                                     } else {
-                                       RegExp exp = RegExp(
-                                         statement,
-                                         caseSensitive: false,
-                                       );
-                                       for (Datum data in _getStory.data) {
-                                         try {
-                                           if (isValidStoryTime(data)) {
-                                             print("Time matched");
-                                             bool match =
-                                             exp.hasMatch(data.caption);
-                                             print('in...');
-                                             if (match == true) {
-                                               storyId.add(data.id);
-                                             } else {
-                                               //Navigator.pop(context);
-                                             }
-                                           } else {
-                                             print("Time not matched");
-                                           }
-                                         } catch (e) {
-                                           // setState((){error='';});
+                                        if (Get.isDialogOpen) {
+                                          Get.back();
+                                        }
+                                        Navigator.pop(context);
+                                      } else {
+                                        RegExp exp = RegExp(
+                                          statement,
+                                          caseSensitive: false,
+                                        );
+                                        for (Datum data in _getStory.data) {
+                                          try {
+                                            if (isValidStoryTime(data)) {
+                                              print("Time matched");
+                                              bool match =
+                                                  exp.hasMatch(data.caption);
+                                              print('in...');
+                                              if (match == true) {
+                                                storyId.add(data.id);
+                                              } else {
+                                                //Navigator.pop(context);
+                                              }
+                                            } else {
+                                              print("Time not matched");
+                                            }
+                                          } catch (e) {
+                                            // setState((){error='';});
 
-                                           //Navigator.pop(context);
-                                         }
-                                       }
-                                       Get.back();
-                                     }
+                                            //Navigator.pop(context);
+                                          }
+                                        }
+                                        Get.back();
+                                      }
 
-                                     if (storyId.isEmpty) {
-                                       showAlertdialog(
-                                         title: 'No Story detected',
-                                         content:
-                                         'No story has been posted by you with ${widget.brandTag} or the story might have not been uploaded yet. Delete the story and try again.',
-                                       );
-                                     } else {
-                                       var value = await checkstryId(
-                                           storyId
-                                               .toSet()
-                                               .toList(growable: true),
-                                           widget.id,
-                                           widget.campaignId,
-                                           customerId);
-                                       if (value == 200) {
-                                         print('in dialog');
+                                      if (storyId.isEmpty) {
+                                        showAlertdialog(
+                                          title: 'No Story detected',
+                                          content:
+                                              'No story has been posted by you with ${widget.brandTag} or the story might have not been uploaded yet. Delete the story and try again.',
+                                        );
+                                      } else {
+                                        var value = await checkstryId(
+                                            storyId
+                                                .toSet()
+                                                .toList(growable: true),
+                                            widget.id,
+                                            widget.campaignId,
+                                            customerId);
+                                        if (value == 200) {
+                                          print('in dialog');
 
+                                          //setState(() {loading1 = false;});
 
-                                         //setState(() {loading1 = false;});
-
-
-                                         await goToDialog("Rs. "+ "$cashback");
-                                       } else {
-                                         showAlertdialog(
-                                           title: 'Improper story',
-                                           content: "Please Add Proper Story",
-                                         );
-                                         // Navigator.pop(context);
-                                       }
-                                     }
-                                   },
-                                 );
-                               }
-                               Navigator.pop(context);
-                             },
-                           ),
-                         ],
-                       );
-                     },
-                   );
-                 } else {
-                   showAlertdialog(
-                     title: 'Story limit',
-                     content:
-                     "Max Story limit per day is 1 and it looks like you've posted the story for the day. Please try next day",
-                   );
-                 }
-               }
+                                          await goToDialog("Rs. " "$cashback");
+                                        } else {
+                                          showAlertdialog(
+                                            title: 'Improper story',
+                                            content: "Please Add Proper Story",
+                                          );
+                                          // Navigator.pop(context);
+                                        }
+                                      }
+                                    },
+                                  );
+                                }
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    showAlertdialog(
+                      title: 'Story limit',
+                      content:
+                          "Max Story limit per day is 1 and it looks like you've posted the story for the day. Please try next day",
+                    );
+                  }
+                }
               },
               child: Center(
                 child: Text(
@@ -709,10 +702,11 @@ class _BrandStoriesState extends State<BrandStories>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
-                    mainAxisAlignment : MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.only(left: 40, right: 40, top: 0),
+                        padding:
+                            const EdgeInsets.only(left: 40, right: 40, top: 0),
                         alignment: Alignment.centerLeft,
                         child: GestureDetector(
                           onTap: () {
@@ -726,7 +720,8 @@ class _BrandStoriesState extends State<BrandStories>
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.only(left: 40, right: 40, top: 0),
+                        padding:
+                            const EdgeInsets.only(left: 40, right: 40, top: 0),
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
                           onTap: () {
@@ -748,7 +743,7 @@ class _BrandStoriesState extends State<BrandStories>
                             child: Text(
                               "Help",
                               style: GoogleFonts.montserrat(
-                                fontSize:16,
+                                fontSize: 16,
                                 //fontWeight: FontWeight.w800,
                                 color: Colors.red,
                               ),
@@ -808,7 +803,8 @@ class _BrandStoriesState extends State<BrandStories>
                                   builder: (context, AsyncSnapshot snapshot) {
                                     if (!snapshot.hasData) {
                                       return const Center(
-                                          child: CircularProgressIndicator(color: kPrimaryColor));
+                                          child: CircularProgressIndicator(
+                                              color: kPrimaryColor));
                                     }
 
                                     return ListView.builder(
@@ -820,9 +816,9 @@ class _BrandStoriesState extends State<BrandStories>
                                         return GestureDetector(
                                             onTap: () {
                                               storyController.storyUrl =
-                                              "${_getMedia.media[index].src}";
+                                                  _getMedia.media[index].src;
                                               storyController.isStorySelected =
-                                              true;
+                                                  true;
                                               storyController.selectedIndex =
                                                   index;
 
@@ -831,62 +827,63 @@ class _BrandStoriesState extends State<BrandStories>
                                                     "Image OnTap --> ${_getMedia.media[index].src}");
 
                                                 mediaType =
-                                                "${_getMedia.media[index].type}";
+                                                    _getMedia.media[index].type;
                                                 choice = index;
                                               });
                                             },
                                             child: _getMedia
-                                                .media[index].type ==
-                                                'image'
+                                                        .media[index].type ==
+                                                    'image'
                                                 ? Container(
-                                                margin:
-                                                const EdgeInsets.fromLTRB(
-                                                    35, 0, 35, 0),
-                                                decoration:
-                                                const BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.all(
-                                                    Radius.circular(10),
+                                                    margin: const EdgeInsets
+                                                        .fromLTRB(35, 0, 35, 0),
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(10),
+                                                      ),
                                                     ),
-                                                ),
-                                              padding:
-                                              const EdgeInsets.only(
-                                                  bottom: 5),
-                                              alignment: Alignment.center,
-                                              child: Obx(
-                                                    () => Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius
-                                                        .circular(8),
-                                                    border: Border.all(
-                                                      color: storyController
-                                                          .isStorySelected &&
-                                                          storyController
-                                                              .selectedIndex ==
-                                                              index
-                                                          ? kBlackColor
-                                                          : Colors
-                                                          .transparent,
-                                                    ),
-                                                  ),
-                                                  padding:
-                                                  const EdgeInsets.all(
-                                                      8),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl:
-                                                    "${_getMedia.media[index].src}",
-                                                    progressIndicatorBuilder: (context,
-                                                        url,
-                                                        downloadProgress) =>
-                                                        CircularProgressIndicator(
-                                                            value: downloadProgress
-                                                                .progress),
-                                                    errorWidget: (context,
-                                                        url, error) =>
-                                                    const Icon(
-                                                        Icons.error),
-                                                  ),
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 5),
+                                                    alignment: Alignment.center,
+                                                    child: Obx(
+                                                      () => Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                          border: Border.all(
+                                                            color: storyController
+                                                                        .isStorySelected &&
+                                                                    storyController
+                                                                            .selectedIndex ==
+                                                                        index
+                                                                ? kBlackColor
+                                                                : Colors
+                                                                    .transparent,
+                                                          ),
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8),
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl: _getMedia
+                                                              .media[index].src,
+                                                          progressIndicatorBuilder: (context,
+                                                                  url,
+                                                                  downloadProgress) =>
+                                                              CircularProgressIndicator(
+                                                                  value: downloadProgress
+                                                                      .progress),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              const Icon(
+                                                                  Icons.error),
+                                                        ),
                                                       ),
                                                     ),
                                                   )
@@ -915,14 +912,14 @@ class _BrandStoriesState extends State<BrandStories>
                                         return GestureDetector(
                                           onTap: () {
                                             storyController.storyUrl =
-                                                "${_getMedia.media[index].src}";
-                                           // storyController.error = '';
+                                                _getMedia.media[index].src;
+                                            // storyController.error = '';
                                             setState(() {
                                               print(
                                                   "Video onTap --> ${_getMedia.media[index].src}");
 
                                               mediaType =
-                                                  "${_getMedia.media[index].type}";
+                                                  _getMedia.media[index].type;
                                               choice = index;
                                             });
                                           },
@@ -954,8 +951,8 @@ class _BrandStoriesState extends State<BrandStories>
                                                     child: VideoWidget(
                                                       index: index,
                                                       play: true,
-                                                      url:
-                                                          '${_getMedia.media[index].src}',
+                                                      url: _getMedia
+                                                          .media[index].src,
                                                     ),
                                                   ),
                                                 )
@@ -1047,7 +1044,7 @@ class _BrandStoriesState extends State<BrandStories>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    successTicket(amount,""),
+                    successTicket(amount, ""),
                     SizedBox(
                       height: 10.0,
                     ),
@@ -1067,109 +1064,114 @@ class _BrandStoriesState extends State<BrandStories>
             ));
   }
 
-  successTicket(amount,brand) => Stack(
-    children: <Widget>[
-      Container(
-
-        width: double.infinity,
-        padding: const EdgeInsets.all(16.0),
-        child: Material(
-          clipBehavior: Clip.antiAlias,
-          elevation: 2.0,
-          borderRadius: BorderRadius.circular(4.0),
-          child: Padding(
+  successTicket(amount, brand) => Stack(
+        children: <Widget>[
+          Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(16.0),
-            child: Stack(
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: Material(
+              clipBehavior: Clip.antiAlias,
+              elevation: 2.0,
+              borderRadius: BorderRadius.circular(4.0),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Stack(
                   children: <Widget>[
-                    SizedBox(height: 10,),
-                    GestureDetector(
-                      onTap: (){ _controllerTopCenter.play();
-
-                      },
-                      child: Text(
-                        "Congratulations!",
-                        style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.w700, color:Colors.black,),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Text(
-                      "You have won a scratch card.",
-                      style: TextStyle(
-                        fontSize: 15.0, fontWeight: FontWeight.normal, color:Colors.black,),
-                    ),
-                    SizedBox(height: 18,),
-                    Stack(
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        Align(
-                          alignment: Alignment.center,
-                          child: ConfettiWidget(
-                            confettiController: _controllerTopCenter,
-                            blastDirection: 0,
-                            emissionFrequency: 0.1,
-                            numberOfParticles: 90,
-                            maxBlastForce: 15,
-                            minBlastForce: 9,
-                            //  maxBlastForce: 10,
-                            //shouldLoop: true,
-                            minimumSize: const Size(2,
-                                5), // set the minimum potential size for the confetti (width, height)
-                            maximumSize: const Size(10, 10),
-                            //colors: [kPrimaryOrange,kPrimaryPink,kLightGrey]
-                          ),
+                        SizedBox(
+                          height: 10,
                         ),
-
-                        Card(
-                          elevation: 6.0,
-                          //margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-                          child: Container(
-
-                            padding: const EdgeInsets.all(16.0),
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.white,
-                                    blurRadius: 10,
-                                    spreadRadius: 0,
-                                    offset: Offset(0, 0))
-                              ],
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child:  new ScratchCardW(
-                                brand: brand,
-                                value: amount,
-                                docId: "ddd",
-                                uId: "dddd"
+                        GestureDetector(
+                          onTap: () {
+                            _controllerTopCenter.play();
+                          },
+                          child: Text(
+                            "Congratulations!",
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
                             ),
                           ),
                         ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Text(
+                          "You have won a scratch card.",
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 18,
+                        ),
+                        Stack(
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.center,
+                              child: ConfettiWidget(
+                                confettiController: _controllerTopCenter,
+                                blastDirection: 0,
+                                emissionFrequency: 0.1,
+                                numberOfParticles: 90,
+                                maxBlastForce: 15,
+                                minBlastForce: 9,
+                                //  maxBlastForce: 10,
+                                //shouldLoop: true,
+                                minimumSize: const Size(2,
+                                    5), // set the minimum potential size for the confetti (width, height)
+                                maximumSize: const Size(10, 10),
+                                //colors: [kPrimaryOrange,kPrimaryPink,kLightGrey]
+                              ),
+                            ),
+                            Card(
+                              elevation: 6.0,
+                              //margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                              child: Container(
+                                padding: const EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.white,
+                                        blurRadius: 10,
+                                        spreadRadius: 0,
+                                        offset: Offset(0, 0))
+                                  ],
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: new ScratchCardW(
+                                    brand: brand,
+                                    value: amount,
+                                    docId: "ddd",
+                                    uId: "dddd"),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // ScratchCardView(
+                        //                                           value: paidAmount.round(), docId: docId, uId: userId
+                        //                                             ),
                       ],
                     ),
-                    // ScratchCardView(
-                    //                                           value: paidAmount.round(), docId: docId, uId: userId
-                    //                                             ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    ],
-  );
+        ],
+      );
 }
-
 
 class ScratchCardW extends StatefulWidget {
   final String brand;
   final String value;
   final String docId, uId;
-  ScratchCardW({this.value, this.docId, this.uId,this.brand});
+  ScratchCardW({this.value, this.docId, this.uId, this.brand});
 
   @override
   _ScratchCardWState createState() => _ScratchCardWState();
@@ -1177,12 +1179,11 @@ class ScratchCardW extends StatefulWidget {
 
 class _ScratchCardWState extends State<ScratchCardW> {
   double _opacity = 0.0;
-  double brush= 50;
+  double brush = 50;
   Future<bool> _mockCheckForSession() async {
     await Future.delayed(Duration(milliseconds: 1500), () {});
     return true;
   }
-
 
   // ScratchCardValue(couponId)async{
   //   print('the cashback id is @$couponId');
@@ -1199,7 +1200,6 @@ class _ScratchCardWState extends State<ScratchCardW> {
   //   print('value value ${response.body}');
   // }
 
-
   ScratchCardValue(couponId) async {
     print('the cashback id is @$couponId');
     print('phone number is 2 $phonenumber');
@@ -1210,7 +1210,7 @@ class _ScratchCardWState extends State<ScratchCardW> {
     var body = {"id": "$couponId", "phone": "+91$phonenumber"};
 
     final response = await http.post(
-      Uri.parse("https://nearlikes.com/v1/api/client/cashback/scratch/v2"),
+      Uri.parse(kCashbackScratched),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -1261,6 +1261,7 @@ class _ScratchCardWState extends State<ScratchCardW> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => reset());
   }
+
   List<DebuggableCondition> conditions = [];
   bool shouldOpenDialog;
   T getCondition<T>() => rateMyApp.conditions.whereType<T>().toList().first;
@@ -1273,34 +1274,45 @@ class _ScratchCardWState extends State<ScratchCardW> {
     return RateMyAppBuilder(
       builder: (context) => Scratcher(
         accuracy: ScratchAccuracy.low,
-        threshold:5,
+        threshold: 5,
         brushSize: brush,
-        onChange: (value){print('sadasd$value');},
-
+        onChange: (value) {
+          print('sadasd$value');
+        },
         onThreshold: () {
           print("Threshold reached, you won!");
           setState(() {
             _opacity = 1;
-            brush=500;
+            brush = 500;
           });
 
-          _mockCheckForSession().then((value) async{
-            if(upi==false){
-
-              return showDialog(context: context, builder: (context){
-                return AlertDialog(
-                  title: Text('Add UPI'),
-                  content: Text('Please add your upi for getting the cash reward '),
-                  actions: [
-                    FlatButton(onPressed: ()async{
-                     // await ScratchCardValue(cashbackId);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LinkUPI(cashbackId: cashbackId,)));
-                    }, child:Text('OK') )
-                  ],
-                );});}
-            else if (upi==true){
+          _mockCheckForSession().then((value) async {
+            if (upi == false) {
+              return showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Add UPI'),
+                      content: Text(
+                          'Please add your upi for getting the cash reward '),
+                      actions: [
+                        FlatButton(
+                            onPressed: () async {
+                              // await ScratchCardValue(cashbackId);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LinkUPI(
+                                            cashbackId: cashbackId,
+                                          )));
+                            },
+                            child: Text('OK'))
+                      ],
+                    );
+                  });
+            } else if (upi == true) {
               await ScratchCardValue(cashbackId);
               // await ScratchCardValue(cashbackId);
               // await cashbackScratched(cashbackId);
@@ -1309,7 +1321,10 @@ class _ScratchCardWState extends State<ScratchCardW> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('Bravo!',style: TextStyle(color: Colors.red),),
+                      title: Text(
+                        'Bravo!',
+                        style: TextStyle(color: Colors.red),
+                      ),
                       content: Text(
                           'Your cashback will be credited after 24 hours! '),
                       actions: [
@@ -1320,37 +1335,38 @@ class _ScratchCardWState extends State<ScratchCardW> {
                               // Navigator.pop(context);
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                    return PageGuide();
-                                  }));
+                                return PageGuide();
+                              }));
                             },
                             child: Text('OK'))
                       ],
                     );
                   });
-             // Navigator.push(context, MaterialPageRoute(builder: (context) { return PageGuide();}));
+              // Navigator.push(context, MaterialPageRoute(builder: (context) { return PageGuide();}));
 
             }
           });
-
-
         },
         color: Colors.greenAccent.shade700,
         image: Image.asset("assets/scratchcard.png"),
-
         child: AnimatedOpacity(
           duration: Duration(milliseconds: 250),
           opacity: _opacity,
           child: Container(
             alignment: Alignment.center,
-            child:
-            Padding(
+            child: Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Image.asset(
-                    "assets/trophy.png",width: 100,height: 95,),
-                  SizedBox(height: 10,),
+                    "assets/trophy.png",
+                    width: 100,
+                    height: 95,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Text(
                     "You've won",
                     style: TextStyle(
@@ -1358,15 +1374,19 @@ class _ScratchCardWState extends State<ScratchCardW> {
                         fontSize: 14,
                         color: Colors.black),
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Text(
-                    "${widget.value}".toString(),
+                    widget.value.toString(),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
-                        color: kPrimaryOrange),
+                        color: kPrimaryColor),
                   ),
-                  SizedBox(height: 2,),
+                  SizedBox(
+                    height: 2,
+                  ),
                   // Text(
                   //   "${widget.brand}"==""?"":widget.brand,
                   //   style: TextStyle(
@@ -1397,7 +1417,8 @@ class _ScratchCardWState extends State<ScratchCardW> {
         // //print('Open Rating Again? $openRatingAgain');
         // print('Are Conditions Met? $hasMetConditions');
 
-        print("Conditions  ----------------------------------------------------------------");
+        print(
+            "Conditions  ----------------------------------------------------------------");
 
         rateMyApp.conditions.forEach((condition) {
           if (condition is DebuggableCondition) {
@@ -1405,51 +1426,63 @@ class _ScratchCardWState extends State<ScratchCardW> {
           }
         });
 
-        print('Are all conditions met ? ' + (rateMyApp.shouldOpenDialog ? 'Yes' : 'No'));
+        print('Are all conditions met ? ' +
+            (rateMyApp.shouldOpenDialog ? 'Yes' : 'No'));
 
         if (shouldOpenDialog && doNotOpenAgain.doNotOpenAgain == false) {
           print("Show Star Rate Dialog");
           rateMyApp.showStarRateDialog(
             context,
             title: 'Rate this app',
-            message: 'You like this app ? Then take a little bit of your time to leave a rating :',
-            actionsBuilder: (context, stars) { // Triggered when the user updates the star rating.
+            message:
+                'You like this app ? Then take a little bit of your time to leave a rating :',
+            actionsBuilder: (context, stars) {
+              // Triggered when the user updates the star rating.
               return [
                 TextButton(
                   child: Text('RATE US'),
                   onPressed: () async {
-                    print('Thanks for the ' + (stars == null ? '0' : stars.round().toString()) + ' star(s) !');
-                    await rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
+                    print('Thanks for the ' +
+                        (stars == null ? '0' : stars.round().toString()) +
+                        ' star(s) !');
+                    await rateMyApp
+                        .callEvent(RateMyAppEventType.rateButtonPressed);
                     await rateMyApp.launchStore();
                     rateMyApp.save().then((v) => setState(() {
-                      doNotOpenAgain.doNotOpenAgain = true;
-                      shouldOpenDialog = false;
-                    }));
-                    Navigator.pop<RateMyAppDialogButton>(context, RateMyAppDialogButton.rate);
+                          doNotOpenAgain.doNotOpenAgain = true;
+                          shouldOpenDialog = false;
+                        }));
+                    Navigator.pop<RateMyAppDialogButton>(
+                        context, RateMyAppDialogButton.rate);
                   },
                 ),
                 TextButton(
                   child: Text('MAYBE LATER'),
                   onPressed: () async {
-                    await rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
+                    await rateMyApp
+                        .callEvent(RateMyAppEventType.laterButtonPressed);
                     rateMyApp.save().then((v) => setState(() {
-                      doNotOpenAgain.doNotOpenAgain = false;
-                      shouldOpenDialog = true;
-                    }));
-                    Navigator.pop<RateMyAppDialogButton>(context, RateMyAppDialogButton.later);
+                          doNotOpenAgain.doNotOpenAgain = false;
+                          shouldOpenDialog = true;
+                        }));
+                    Navigator.pop<RateMyAppDialogButton>(
+                        context, RateMyAppDialogButton.later);
                   },
                 ),
                 TextButton(
                   child: Text('NO, THANKS!'),
                   onPressed: () async {
-                    await rateMyApp.callEvent(RateMyAppEventType.noButtonPressed);
+                    await rateMyApp
+                        .callEvent(RateMyAppEventType.noButtonPressed);
                     rateMyApp.save().then((v) => setState(() {
-                      doNotOpenAgain.doNotOpenAgain = true;
-                      shouldOpenDialog = false;
-                    }));
-                    print("doNotOpenAgain - " + doNotOpenAgain.doNotOpenAgain.toString());
+                          doNotOpenAgain.doNotOpenAgain = true;
+                          shouldOpenDialog = false;
+                        }));
+                    print("doNotOpenAgain - " +
+                        doNotOpenAgain.doNotOpenAgain.toString());
                     print("shouldOpenDialog - " + shouldOpenDialog.toString());
-                    Navigator.pop<RateMyAppDialogButton>(context, RateMyAppDialogButton.no);
+                    Navigator.pop<RateMyAppDialogButton>(
+                        context, RateMyAppDialogButton.no);
                   },
                 ),
               ];
@@ -1472,11 +1505,11 @@ class _ScratchCardWState extends State<ScratchCardW> {
     print("Reset Dialog Called");
     await rateMyApp.reset();
     setState(() {
-      conditions = rateMyApp.conditions.whereType<DebuggableCondition>().toList();
+      conditions =
+          rateMyApp.conditions.whereType<DebuggableCondition>().toList();
       shouldOpenDialog = rateMyApp.shouldOpenDialog;
     });
   }
-
 }
 
 class VideoWidget extends StatefulWidget {
@@ -1495,8 +1528,6 @@ class VideoWidget extends StatefulWidget {
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
-
-
   static StoryController storyController = Get.find();
   @override
   void initState() {

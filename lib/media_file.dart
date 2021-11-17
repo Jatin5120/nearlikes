@@ -10,7 +10,6 @@ import 'package:nearlikes/controllers/controllers.dart';
 import 'package:nearlikes/models/get_media.dart';
 
 import 'package:flutter/widgets.dart';
-import 'package:nearlikes/theme.dart';
 import 'package:nearlikes/widgets/video_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 

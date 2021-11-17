@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'theme.dart';
+import 'constants/constants.dart';
 import 'package:nearlikes/login.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class OnBoarding extends StatefulWidget {
+  const OnBoarding({Key key}) : super(key: key);
+
   @override
   _OnBoardingState createState() => _OnBoardingState();
 }
 
 class _OnBoardingState extends State<OnBoarding> {
-  int _current=0;
+  int _current = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,11 +36,12 @@ class _OnBoardingState extends State<OnBoarding> {
                       setState(() {
                         _current = index;
                       });
-                    }
-                ),
+                    }),
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: imgList.map((url) {
@@ -50,35 +52,35 @@ class _OnBoardingState extends State<OnBoarding> {
                   margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _current == index
-                        ? kPrimaryOrange
-                        : Color(0xffc4c4c4),
+                    color:
+                        _current == index ? kPrimaryColor : Color(0xffc4c4c4),
                   ),
                 );
               }).toList(),
             ),
-            SizedBox(height: 40,),
+            SizedBox(
+              height: 40,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Login()));
                 },
                 child: Container(
                     height: 50,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [
-                          kPrimaryPink,
-                          kPrimaryOrange,
-                        ],
-                      )
-
-                    ),
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                          colors: [
+                            kSecondaryColor,
+                            kPrimaryColor,
+                          ],
+                        )),
                     child: Center(
                       child: Text('Get Started',
                           style: GoogleFonts.montserrat(
@@ -103,27 +105,24 @@ final List<String> imgList = [
   'assets/ob3.png',
 ];
 
-
 final List<Widget> imageSliders = imgList
     .map((item) => Container(
-  child: Container(
-    margin: EdgeInsets.all(5.0),
-    child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        child: Stack(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    '$item',
+      margin: const EdgeInsets.all(5.0),
+      child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      item,
+                    ),
+                    fit: BoxFit.fill,
                   ),
-                  fit: BoxFit.fill,
                 ),
               ),
-            ),
-          ],
-        )),
-  ),
-))
+            ],
+          )),
+    ))
     .toList();

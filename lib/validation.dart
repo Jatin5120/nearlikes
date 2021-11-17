@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nearlikes/constants/colors.dart';
+import 'package:nearlikes/constants/constants.dart';
 import 'package:nearlikes/home_page.dart';
 import 'package:get/get.dart';
 import 'package:nearlikes/page_guide.dart';
@@ -21,17 +22,16 @@ Future<String> validation(String post, Campaign campaign, String story,
   // print("$userid");
   print('userid $username');
 
-  final String apiUrl = "https://nearlikes.com/v1/api/client/add/post";
   var body = {
-    "story": "$story",
-    "post": "$post",
-    "user": "$username",
-    "name": "$name",
-    "phone": "$phonen",
-    "id": "${campaign.id}"
+    "story": story,
+    "post": post,
+    "user": username,
+    "name": name,
+    "phone": phonen,
+    "id": campaign.id
   };
   final response = await http.post(
-    Uri.parse(apiUrl),
+    Uri.parse(kAddPost),
     headers: {"Content-Type": "application/json"},
     body: json.encode(body),
   );
@@ -69,10 +69,9 @@ class _ValidState extends State<Valid> {
     print(".....injuinju");
     print(customerId);
 
-    final String apiUrl = "https://nearlikes.com/v1/api/client/own/fetch";
-    var body = {"id": "$customerId"};
+    var body = {"id": customerId};
     final response = await http.post(
-      Uri.parse(apiUrl),
+      Uri.parse(kGetCustomer),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -110,7 +109,7 @@ class _ValidState extends State<Valid> {
     var body = {"phone": "+91$phonenumber"};
 
     final response = await http.post(
-      Uri.parse('https://nearlikes.com/v1/api/client/getid'),
+      Uri.parse(kGetId),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -198,7 +197,7 @@ class _ValidState extends State<Valid> {
                   ),
                   Padding(
                     padding:
-                    const EdgeInsets.only(right: 15, left: 15, top: 10),
+                        const EdgeInsets.only(right: 15, left: 15, top: 10),
                     child: TextFormField(
                       //key: _formkey,
                       controller: _controllerstory,
@@ -224,7 +223,7 @@ class _ValidState extends State<Valid> {
                             fontWeight: FontWeight.w700),
                         isDense: true,
                         contentPadding:
-                        EdgeInsets.fromLTRB(15.0, 20.0, 5.0, 10.0),
+                            EdgeInsets.fromLTRB(15.0, 20.0, 5.0, 10.0),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                           borderSide: BorderSide(width: 1, color: kLightGrey),
@@ -246,7 +245,7 @@ class _ValidState extends State<Valid> {
                   ),
                   Padding(
                     padding:
-                    const EdgeInsets.only(right: 15, left: 15, top: 10),
+                        const EdgeInsets.only(right: 15, left: 15, top: 10),
                     child: TextFormField(
                       controller: _controller,
                       validator: (amt) {
@@ -269,7 +268,7 @@ class _ValidState extends State<Valid> {
                             fontWeight: FontWeight.w700),
                         isDense: true,
                         contentPadding:
-                        EdgeInsets.fromLTRB(15.0, 20.0, 5.0, 10.0),
+                            EdgeInsets.fromLTRB(15.0, 20.0, 5.0, 10.0),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                           borderSide: BorderSide(width: 1, color: kLightGrey),
@@ -326,8 +325,8 @@ class _ValidState extends State<Valid> {
                   pressed
                       ? fetchdata(_controller.text, _controllerstory.text)
                       : Container(
-                    height: 0,
-                  )
+                          height: 0,
+                        )
                 ],
               ),
             ),

@@ -1,23 +1,20 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nearlikes/SuccessSample.dart';
-import 'package:nearlikes/home_page.dart';
+import 'package:nearlikes/Services/services.dart';
+import 'package:nearlikes/constants/constants.dart';
 import 'package:nearlikes/interests.dart';
-import 'package:nearlikes/page_guide.dart';
-import 'theme.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
-  var phNum;
-  Register(this.phNum);
+  final String phoneNum;
+
+  const Register(this.phoneNum, {Key key}) : super(key: key);
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -75,7 +72,6 @@ class _RegisterState extends State<Register> {
     return adultDate.isBefore(today);
   }
 
-  static final kInitialPosition = LatLng(15.9129, 79.7400);
   PickResult selectedPlace;
   String name;
   String location;
@@ -145,20 +141,21 @@ class _RegisterState extends State<Register> {
   final _controller = TextEditingController();
 
   updateData(String name, int age, String location) async {
-    var url = 'https://nearlikes.com/v1/api/client/add';
-
     var body = {
       //"user":"${widget.ig_details['username']}",
-      "name": "$name",
+      "name": name,
       "age": age,
       //"insta": "${widget.ig_userId}",
       //"followers": follwerCount,
-      "location": "$location",
-      "phone": "+91${widget.phNum}", // should contain +91,
+      "location": location,
+      "phone": "+91${widget.phoneNum}", // should contain +91,
       //"token": "$accessToken", //insta access token
     };
-    var response = await http.post(Uri.parse(url),
-        headers: {"Content-Type": "application/json"}, body: json.encode(body));
+    var response = await http.post(
+      Uri.parse(kAddUser),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(body),
+    );
     print('the response of the body ${response.body}');
     return response.statusCode;
   }
@@ -176,12 +173,12 @@ class _RegisterState extends State<Register> {
                   onTap: () {
                     Navigator.pop(context);
                   },
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_back,
-                    color: kPrimaryOrange,
+                    color: kPrimaryColor,
                     size: 30,
                   )),
-              SizedBox(
+              const SizedBox(
                 height: 22,
               ),
               GestureDetector(
@@ -214,7 +211,7 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 24,
               ),
               Text(
@@ -225,11 +222,11 @@ class _RegisterState extends State<Register> {
                   color: kDarkGrey,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Image.asset('assets/login.png', width: 301, height: 301),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Form(
@@ -240,10 +237,10 @@ class _RegisterState extends State<Register> {
                       padding: const EdgeInsets.all(10),
                       alignment: Alignment.center,
                       height: 75.0,
-                      decoration: new BoxDecoration(
+                      decoration: BoxDecoration(
                           //color: kLightGrey,
                           border: Border.all(color: kLightGrey),
-                          borderRadius: new BorderRadius.circular(15.0)),
+                          borderRadius: BorderRadius.circular(15.0)),
                       child: TextFormField(
                         maxLines: 1,
                         keyboardType: TextInputType.name,
@@ -254,23 +251,23 @@ class _RegisterState extends State<Register> {
                             fontSize: 16,
                             color: kDarkGrey,
                             fontWeight: FontWeight.w700),
-                        cursorColor: kPrimaryOrange,
+                        cursorColor: kPrimaryColor,
                         //autofocus: true,
                         decoration: InputDecoration(
                           isDense: true,
                           contentPadding:
-                              EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
-                          prefixIcon: Icon(
+                              const EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                          prefixIcon: const Icon(
                             Icons.person_outline_sharp,
                             color: kLightGrey,
                             size: 20,
                           ),
-                          enabledBorder: OutlineInputBorder(
+                          enabledBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             borderSide:
                                 BorderSide(width: 1, color: Colors.transparent),
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             borderSide:
                                 BorderSide(width: 1, color: Colors.transparent),
@@ -287,17 +284,17 @@ class _RegisterState extends State<Register> {
                         },
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Container(
                       padding: const EdgeInsets.all(10),
                       alignment: Alignment.center,
                       height: 75.0,
-                      decoration: new BoxDecoration(
+                      decoration: BoxDecoration(
                           //color: kLightGrey,
                           border: Border.all(color: kLightGrey),
-                          borderRadius: new BorderRadius.circular(15.0)),
+                          borderRadius: BorderRadius.circular(15.0)),
                       child: TextFormField(
                         controller: _controller,
                         maxLines: 1,
@@ -310,23 +307,23 @@ class _RegisterState extends State<Register> {
                             fontSize: 16,
                             color: kDarkGrey,
                             fontWeight: FontWeight.w700),
-                        cursorColor: kPrimaryOrange,
+                        cursorColor: kPrimaryColor,
                         //autofocus: true,
                         decoration: InputDecoration(
                           isDense: true,
                           contentPadding:
-                              EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
-                          prefixIcon: Icon(
+                              const EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                          prefixIcon: const Icon(
                             Icons.calendar_today_outlined,
                             color: kLightGrey,
                             size: 20,
                           ),
-                          enabledBorder: OutlineInputBorder(
+                          enabledBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             borderSide:
                                 BorderSide(width: 1, color: Colors.transparent),
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: const OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             borderSide:
                                 BorderSide(width: 1, color: Colors.transparent),
@@ -347,8 +344,8 @@ class _RegisterState extends State<Register> {
                               builder: (context, picker) {
                                 return Theme(
                                   data: ThemeData.light().copyWith(
-                                    colorScheme: ColorScheme.dark(
-                                      primary: kPrimaryOrange,
+                                    colorScheme: const ColorScheme.dark(
+                                      primary: kPrimaryColor,
                                       onPrimary: Colors.white,
                                       surface: Colors.pink,
                                       onSurface: kDarkGrey,
@@ -383,7 +380,7 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
 
@@ -405,14 +402,14 @@ class _RegisterState extends State<Register> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
-                          onTap: _launchPrivacy,
+                          onTap: () => UrlLauncher.openLink(url: kPrivacy2),
                           child: Text(
                             "Privacy",
                             style: GoogleFonts.montserrat(
                               decoration: TextDecoration.underline,
                               fontSize: 13,
                               fontWeight: FontWeight.w400,
-                              color: Color(0xff5186F2),
+                              color: kBlueColor,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -427,14 +424,14 @@ class _RegisterState extends State<Register> {
                           textAlign: TextAlign.center,
                         ),
                         GestureDetector(
-                          onTap: _launchTerms,
+                          onTap: () => UrlLauncher.openLink(url: kTerms2),
                           child: Text(
                             "Terms",
                             style: GoogleFonts.montserrat(
                               decoration: TextDecoration.underline,
                               fontSize: 13,
                               fontWeight: FontWeight.w400,
-                              color: Color(0xff5186F2),
+                              color: kBlueColor,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -444,16 +441,16 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               //Center(child: Text(error,style: TextStyle(color: Colors.red),)),
               Center(
                   child: Text(
                 error1,
-                style: TextStyle(color: Colors.red),
+                style: const TextStyle(color: Colors.red),
               )),
-              //SizedBox(height: 10,),
+              //const SizedBox(height: 10,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: InkWell(
@@ -485,12 +482,12 @@ class _RegisterState extends State<Register> {
                                 await updateData(name, age, location);
                             if (response == 200) {
                               print(
-                                  'passing the data to pageguide ${widget.phNum}');
+                                  'passing the data to pageguide ${widget.phoneNum}');
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => ChooseInterests(
-                                            phoneNumber: widget.phNum,
+                                            phoneNumber: widget.phoneNum,
                                           )));
                             } else {
                               setState(() {
@@ -502,12 +499,12 @@ class _RegisterState extends State<Register> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text('Age Restriction'),
-                                    content: Text(
+                                    title: const Text('Age Restriction'),
+                                    content: const Text(
                                         'You need to be above 18 years to use NearLikes'),
                                     actions: <Widget>[
-                                      FlatButton(
-                                        child: Text('Okay'),
+                                      ElevatedButton(
+                                        child: const Text('Okay'),
                                         onPressed: () {
                                           print('//b hello //b');
                                           Navigator.pop(context);
@@ -530,17 +527,17 @@ class _RegisterState extends State<Register> {
                               "Location Access Denied, Can't Continue Further!";
                         });
                       }
-                    } else
+                    } else {
                       return showDialog(
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: Text('Location Restriction'),
-                              content: Text(
+                              title: const Text('Location Restriction'),
+                              content: const Text(
                                   'NearLikes is not available at your location.We will be available soon, Sorry for the inconvenience'),
                               actions: <Widget>[
-                                FlatButton(
-                                  child: Text('Okay'),
+                                ElevatedButton(
+                                  child: const Text('Okay'),
                                   onPressed: () {
                                     print('//b hello //b');
                                     Navigator.pop(context);
@@ -549,6 +546,7 @@ class _RegisterState extends State<Register> {
                               ],
                             );
                           });
+                    }
                     // await Navigator.push(
                     //   context,
                     //   MaterialPageRoute(
@@ -575,15 +573,15 @@ class _RegisterState extends State<Register> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           gradient: locationCheck == true
-                              ? LinearGradient(
+                              ? const LinearGradient(
                                   begin: Alignment.topRight,
                                   end: Alignment.bottomLeft,
                                   colors: [
-                                    kPrimaryPink,
-                                    kPrimaryOrange,
+                                    kSecondaryColor,
+                                    kPrimaryColor,
                                   ],
                                 )
-                              : LinearGradient(
+                              : const LinearGradient(
                                   begin: Alignment.topRight,
                                   end: Alignment.bottomLeft,
                                   colors: [
@@ -607,23 +605,5 @@ class _RegisterState extends State<Register> {
         ),
       ),
     );
-  }
-
-  _launchPrivacy() async {
-    const url = "https://nearlikes.com/privacy_policy.html";
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  _launchTerms() async {
-    const url = "https://nearlikes.com/termsofservice.html";
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }

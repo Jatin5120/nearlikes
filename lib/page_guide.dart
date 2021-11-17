@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:nearlikes/home_page.dart';
 import 'package:nearlikes/profile_page.dart';
 import 'package:nearlikes/select_brand.dart';
-import 'package:nearlikes/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nearlikes/wallet.dart';
+
+import 'constants/constants.dart';
+
 int number;
+
 class PageGuide extends StatefulWidget {
   final phoneNumber;
   PageGuide({this.phoneNumber});
@@ -13,22 +16,21 @@ class PageGuide extends StatefulWidget {
   _PageGuideState createState() => _PageGuideState();
 }
 
-
 class _PageGuideState extends State<PageGuide> {
   // var number;
-  int _currentIndex=0;
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final tabs=[
+    final tabs = [
       HomePage(),
       //SelectBrand(),
       Wallet(),
-      ProfilePage(phoneNumber:widget.phoneNumber),
+      ProfilePage(phoneNumber: widget.phoneNumber),
     ];
     return WillPopScope(
       onWillPop: () async {
-        setState((){
+        setState(() {
           _currentIndex = 0;
         });
         return false;
@@ -42,32 +44,42 @@ class _PageGuideState extends State<PageGuide> {
           currentIndex: _currentIndex,
           type: BottomNavigationBarType.fixed,
           iconSize: 20,
-          selectedItemColor: kPrimaryOrange,
+          selectedItemColor: kPrimaryColor,
           selectedIconTheme: IconThemeData(size: 22),
           selectedFontSize: 14,
           unselectedFontSize: 13,
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-
-              title:Text('Home',style:GoogleFonts.poppins(fontSize: 13),),
-              backgroundColor: kPrimaryOrange,
+              title: Text(
+                'Home',
+                style: GoogleFonts.poppins(fontSize: 13),
+              ),
+              backgroundColor: kPrimaryColor,
             ),
             BottomNavigationBarItem(
               // icon: Icon(Icons.account_balance_wallet_outlined,color: Colors.orange,size: 25,),
-              icon: Icon(Icons.account_balance_wallet_outlined,),
-              title:Text('Post a Story',style:GoogleFonts.poppins(fontSize: 14),),
-              backgroundColor: kPrimaryOrange,
+              icon: Icon(
+                Icons.account_balance_wallet_outlined,
+              ),
+              title: Text(
+                'Post a Story',
+                style: GoogleFonts.poppins(fontSize: 14),
+              ),
+              backgroundColor: kPrimaryColor,
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              title:Text('Profile',style:GoogleFonts.poppins(fontSize: 13),),
-              backgroundColor: kPrimaryOrange,
+              title: Text(
+                'Profile',
+                style: GoogleFonts.poppins(fontSize: 13),
+              ),
+              backgroundColor: kPrimaryColor,
             )
           ],
-          onTap: (index){
+          onTap: (index) {
             setState(() {
-              _currentIndex=index;
+              _currentIndex = index;
             });
           },
         ),

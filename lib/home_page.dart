@@ -2,17 +2,17 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearlikes/Coupons.dart';
+import 'package:nearlikes/coupons.dart';
 import 'package:nearlikes/brand_details.dart';
 import 'package:nearlikes/constants/colors.dart';
-import 'package:nearlikes/link_UPI.dart';
+import 'package:nearlikes/link_upi.dart';
 import 'package:nearlikes/login.dart';
 import 'package:nearlikes/models/get_metrics_data.dart';
 import 'package:nearlikes/notifications.dart';
 import 'package:nearlikes/scratch_cards.dart';
 import 'package:nearlikes/select_brand.dart';
 import 'package:nearlikes/setup_instructions.dart';
-import 'theme.dart';
+import 'constants/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'models/get_campaigns.dart';
@@ -54,7 +54,7 @@ class HomePage extends StatefulWidget {
 Future<Cashback> checkCashback(String phone, String id) async {
   var body = {"phone": "+91$phone", "id": id};
   final response = await http.post(
-    Uri.parse('https://nearlikes.com/v1/api/client/cashback/check'),
+    Uri.parse(kCheckCashback),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -118,12 +118,11 @@ class Cashback {
 
 Future<MetricsData> getMetricsData(String phoneNumber) async {
   print("metrics data start");
-  const String apiUrl = "https://nearlikes.com/v1/api/client/metrics";
   //var body = {"phone": "+916309572528"};
   phoneNumber = "+91" + phoneNumber.trim();
   var body = {"phone": phoneNumber};
   final response = await http.post(
-    Uri.parse(apiUrl),
+    Uri.parse(kGetMetrics),
     headers: {"Content-Type": "application/json"},
     body: json.encode(body),
   );
@@ -161,10 +160,9 @@ class _HomePageState extends State<HomePage> {
     });
 
     print(customerId);
-    const String apiUrl = "https://nearlikes.com/v1/api/client/own/fetch";
     var body = {"id": customerId};
     final response = await http.post(
-      Uri.parse(apiUrl),
+      Uri.parse(kGetCustomer),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -218,7 +216,7 @@ class _HomePageState extends State<HomePage> {
     var body = {"phone": "+91$phonenumber"};
 
     final response = await http.post(
-      Uri.parse('https://nearlikes.com/v1/api/client/getid'),
+      Uri.parse(kGetId),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -253,11 +251,9 @@ class _HomePageState extends State<HomePage> {
   Future<GetCampaigns> getAvailableCampaigns(
       {int followers, String location, int age}) async {
     print("data..");
-    const String apiUrl = "https://nearlikes.com/v1/api/campaign/get/campaigns";
-    // "https://api.nearlikes.com/v1/api/campaign/get/campaigns";
     var body = {"followers": followers, "location": "kolkata", "age": age};
     final response = await http.post(
-      Uri.parse(apiUrl),
+      Uri.parse(kGetCampaigns),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -300,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                   )));
         } else if (postId == 'campaign') {
           globals.appNaviagtor.currentState.push(MaterialPageRoute(
-              builder: (context) => SelectBrand(
+              builder: (context) => const SelectBrand(
                     value: true,
                   )));
         } else if (postId == 'cashback') {
@@ -320,7 +316,7 @@ class _HomePageState extends State<HomePage> {
       "phone": "$phNum",
     };
     var checkuser = await http.post(
-      Uri.parse('https://nearlikes.com/v1/api/client/check'),
+      Uri.parse(kCheckUser),
       headers: {"Content-Type": "application/json"},
       body: json.encode(body),
     );
@@ -331,7 +327,7 @@ class _HomePageState extends State<HomePage> {
       await prefs.clear();
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => Login()),
+          MaterialPageRoute(builder: (context) => const Login()),
           ModalRoute.withName("/Home"));
     }
   }
@@ -416,12 +412,11 @@ class _HomePageState extends State<HomePage> {
     // var PlayerId= prefs.getString('playerId');
     print('the player id inside is $osUserID');
     print('the customer id inside is $customerId');
-    var url = 'https://nearlikes.com/v1/api/client/add/player';
     var body = {
       "id": customerId,
       "push": osUserID,
     };
-    var response = await http.post(Uri.parse(url),
+    var response = await http.post(Uri.parse(kAddPlayer),
         headers: {"Content-Type": "application/json"}, body: json.encode(body));
     print(response.body);
     print(response.statusCode);
@@ -445,7 +440,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   )
                 : RefreshIndicator(
-                    color: kPrimaryOrange,
+                    color: kPrimaryColor,
                     onRefresh: _refreshData,
                     child: Padding(
                       padding:
@@ -501,7 +496,7 @@ class _HomePageState extends State<HomePage> {
                                 style: GoogleFonts.montserrat(
                                   fontSize: 28,
                                   fontWeight: FontWeight.w700,
-                                  color: kBlack,
+                                  color: kBlackColor,
                                 )),
                             SizedBox(
                               height: size.height * 0.200,
@@ -937,7 +932,7 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: (!isDataNotPresent && _getMetricsData != null)
-                ? kPrimaryPink
+                ? kSecondaryColor
                 : Colors.grey,
           ),
           child: Column(
@@ -973,7 +968,7 @@ class _HomePageState extends State<HomePage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: (!isDataNotPresent && _getMetricsData != null)
-                ? kPrimaryPink
+                ? kSecondaryColor
                 : Colors.grey,
           ),
           child: Center(

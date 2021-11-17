@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nearlikes/account_setup.dart';
-import 'package:nearlikes/link_UPI.dart';
+import 'package:nearlikes/link_upi.dart';
 import 'package:nearlikes/otp_verification.dart';
-import 'theme.dart';
+import 'constants/constants.dart';
 
 class LinkBank extends StatefulWidget {
-
   @override
   _LinkBankState createState() => _LinkBankState();
 }
-
-
-
 
 class _LinkBankState extends State<LinkBank> {
   @override
@@ -20,48 +16,64 @@ class _LinkBankState extends State<LinkBank> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal:40,vertical: 80),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 80),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Align(
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                     },
-                    child: Icon(Icons.arrow_back,color: kPrimaryOrange,size: 30,)),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: kPrimaryColor,
+                      size: 30,
+                    )),
               ),
-
-
-              SizedBox(height: 0,),
-              Image.asset('assets/logo.png',width:46.31,height:60.28),
-              SizedBox(height: 25,),
+              SizedBox(
+                height: 0,
+              ),
+              Image.asset('assets/logo.png', width: 46.31, height: 60.28),
+              SizedBox(
+                height: 25,
+              ),
               Center(
-                child: Text("LINK BANK ACCOUNT",style: GoogleFonts.montserrat(
-                  fontSize: 19,
-                  fontWeight: FontWeight.w600,
-                  color: kFontColor,
-                ),),
+                child: Text(
+                  "LINK BANK ACCOUNT",
+                  style: GoogleFonts.montserrat(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w600,
+                    color: kFontColor,
+                  ),
+                ),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Center(
-                child: Text("You need to link your bank account for instant withdrawal of money.",style: GoogleFonts.montserrat(
-                  fontSize:13,
-                  fontWeight: FontWeight.w400,
-                  color: kDarkGrey,
-                ),textAlign: TextAlign.center,),
+                child: Text(
+                  "You need to link your bank account for instant withdrawal of money.",
+                  style: GoogleFonts.montserrat(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: kDarkGrey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              SizedBox(height: 40,),
+              SizedBox(
+                height: 40,
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 alignment: Alignment.center,
                 height: 70.0,
                 decoration: new BoxDecoration(
-                  //color: kLightGrey,
+                    //color: kLightGrey,
                     border: Border.all(color: kLightGrey),
-                    borderRadius: new BorderRadius.circular(
-                        15.0)),
+                    borderRadius: new BorderRadius.circular(15.0)),
                 child: TextFormField(
                   maxLines: 1,
                   onChanged: (value) {
@@ -71,7 +83,7 @@ class _LinkBankState extends State<LinkBank> {
                       fontSize: 16,
                       color: kDarkGrey,
                       fontWeight: FontWeight.w700),
-                  cursorColor: kPrimaryOrange,
+                  cursorColor: kPrimaryColor,
                   //autofocus: true,
                   decoration: InputDecoration(
                     prefixStyle: GoogleFonts.montserrat(
@@ -79,24 +91,21 @@ class _LinkBankState extends State<LinkBank> {
                         color: kDarkGrey,
                         fontWeight: FontWeight.w700),
                     isDense: true,
-                    contentPadding:
-                    EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                    contentPadding: EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
                     prefixIcon: Icon(
                       Icons.person_outline_sharp,
-                      color:kLightGrey,
+                      color: kLightGrey,
                       size: 20,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                          width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.transparent),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                          width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.transparent),
                     ),
                     labelText: "Payee Name",
                     labelStyle: GoogleFonts.montserrat(
@@ -106,16 +115,17 @@ class _LinkBankState extends State<LinkBank> {
                   ),
                 ),
               ),
-              SizedBox(height: 22,),
+              SizedBox(
+                height: 22,
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 alignment: Alignment.center,
                 height: 70.0,
                 decoration: new BoxDecoration(
-                  //color: kLightGrey,
+                    //color: kLightGrey,
                     border: Border.all(color: kLightGrey),
-                    borderRadius: new BorderRadius.circular(
-                        15.0)),
+                    borderRadius: new BorderRadius.circular(15.0)),
                 child: TextFormField(
                   maxLines: 1,
                   onChanged: (value) {
@@ -125,7 +135,7 @@ class _LinkBankState extends State<LinkBank> {
                       fontSize: 16,
                       color: kDarkGrey,
                       fontWeight: FontWeight.w700),
-                  cursorColor: kPrimaryOrange,
+                  cursorColor: kPrimaryColor,
                   //autofocus: true,
                   decoration: InputDecoration(
                     prefixStyle: GoogleFonts.montserrat(
@@ -133,25 +143,21 @@ class _LinkBankState extends State<LinkBank> {
                         color: kDarkGrey,
                         fontWeight: FontWeight.w700),
                     isDense: true,
-                    contentPadding:
-                    EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                    contentPadding: EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
                     prefixIcon: Icon(
                       Icons.account_box_outlined,
-
-                      color:kLightGrey,
+                      color: kLightGrey,
                       size: 20,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                          width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.transparent),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                          width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.transparent),
                     ),
                     labelText: "Account Number",
                     labelStyle: GoogleFonts.montserrat(
@@ -161,16 +167,17 @@ class _LinkBankState extends State<LinkBank> {
                   ),
                 ),
               ),
-              SizedBox(height: 22,),
+              SizedBox(
+                height: 22,
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 alignment: Alignment.center,
                 height: 70.0,
                 decoration: new BoxDecoration(
-                  //color: kLightGrey,
+                    //color: kLightGrey,
                     border: Border.all(color: kLightGrey),
-                    borderRadius: new BorderRadius.circular(
-                        15.0)),
+                    borderRadius: new BorderRadius.circular(15.0)),
                 child: TextFormField(
                   maxLines: 1,
                   onChanged: (value) {
@@ -180,7 +187,7 @@ class _LinkBankState extends State<LinkBank> {
                       fontSize: 16,
                       color: kDarkGrey,
                       fontWeight: FontWeight.w700),
-                  cursorColor: kPrimaryOrange,
+                  cursorColor: kPrimaryColor,
                   //autofocus: true,
                   decoration: InputDecoration(
                     prefixStyle: GoogleFonts.montserrat(
@@ -188,24 +195,21 @@ class _LinkBankState extends State<LinkBank> {
                         color: kDarkGrey,
                         fontWeight: FontWeight.w700),
                     isDense: true,
-                    contentPadding:
-                    EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                    contentPadding: EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
                     prefixIcon: Icon(
                       Icons.vpn_key_outlined,
-                      color:kLightGrey,
+                      color: kLightGrey,
                       size: 20,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                          width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.transparent),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                          width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.transparent),
                     ),
                     labelText: "IFSC Code",
                     labelStyle: GoogleFonts.montserrat(
@@ -215,16 +219,17 @@ class _LinkBankState extends State<LinkBank> {
                   ),
                 ),
               ),
-              SizedBox(height: 22,),
+              SizedBox(
+                height: 22,
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 alignment: Alignment.center,
                 height: 70.0,
                 decoration: new BoxDecoration(
-                  //color: kLightGrey,
+                    //color: kLightGrey,
                     border: Border.all(color: kLightGrey),
-                    borderRadius: new BorderRadius.circular(
-                        15.0)),
+                    borderRadius: new BorderRadius.circular(15.0)),
                 child: TextFormField(
                   maxLines: 1,
                   onChanged: (value) {
@@ -234,7 +239,7 @@ class _LinkBankState extends State<LinkBank> {
                       fontSize: 16,
                       color: kDarkGrey,
                       fontWeight: FontWeight.w700),
-                  cursorColor: kPrimaryOrange,
+                  cursorColor: kPrimaryColor,
                   //autofocus: true,
                   decoration: InputDecoration(
                     prefixStyle: GoogleFonts.montserrat(
@@ -242,24 +247,21 @@ class _LinkBankState extends State<LinkBank> {
                         color: kDarkGrey,
                         fontWeight: FontWeight.w700),
                     isDense: true,
-                    contentPadding:
-                    EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
+                    contentPadding: EdgeInsets.fromLTRB(5.0, 1.0, 5.0, 1.0),
                     prefixIcon: Icon(
                       Icons.account_balance_outlined,
-                      color:kLightGrey,
+                      color: kLightGrey,
                       size: 20,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                          width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.transparent),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                          width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide:
+                          BorderSide(width: 1, color: Colors.transparent),
                     ),
                     labelText: "Bank Name",
                     labelStyle: GoogleFonts.montserrat(
@@ -269,23 +271,32 @@ class _LinkBankState extends State<LinkBank> {
                   ),
                 ),
               ),
-              SizedBox(height: 29,),
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LinkUPI()));
-                },
-                child: Text("Use UPI ID instead",style: GoogleFonts.montserrat(
-                  decoration: TextDecoration.underline,
-                  fontSize:13,
-                  fontWeight: FontWeight.w400,
-                  color: kPrimaryOrange,
-                ),textAlign: TextAlign.center,),
+              SizedBox(
+                height: 29,
               ),
-              SizedBox(height: 15,),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LinkUPI()));
+                },
+                child: Text(
+                  "Use UPI ID instead",
+                  style: GoogleFonts.montserrat(
+                    decoration: TextDecoration.underline,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: kPrimaryColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 0),
                 child: InkWell(
-                  onTap: (){
+                  onTap: () {
                     //Navigator.push(context, MaterialPageRoute(builder: (context) => AccountSetup()));
                   },
                   child: Container(
@@ -297,13 +308,12 @@ class _LinkBankState extends State<LinkBank> {
                             begin: Alignment.topRight,
                             end: Alignment.bottomLeft,
                             colors: [
-                              kPrimaryPink,
-                              kPrimaryOrange,
+                              kSecondaryColor,
+                              kPrimaryColor,
                             ],
-                          )
-                      ),
+                          )),
                       child: Center(
-                        child:  Text('Add Account',
+                        child: Text('Add Account',
                             style: GoogleFonts.montserrat(
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
@@ -313,8 +323,9 @@ class _LinkBankState extends State<LinkBank> {
                       )),
                 ),
               ),
-              SizedBox(height: 20,),
-
+              SizedBox(
+                height: 20,
+              ),
             ],
           ),
         ),

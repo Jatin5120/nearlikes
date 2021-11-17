@@ -2,13 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nearlikes/controllers/controllers.dart';
 import 'package:nearlikes/controllers/story_button_controller.dart';
-import 'package:nearlikes/page_guide.dart';
-import 'package:nearlikes/register.dart';
-import 'package:nearlikes/setup_instructions.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:nearlikes/splash_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart' as globals;
 
 void main() async {
@@ -20,12 +15,14 @@ void main() async {
     GetMaterialApp(
       navigatorKey: globals.appNaviagtor,
       debugShowCheckedModeBanner: false,
-      home: Nearlikes(),
+      home: const Nearlikes(),
     ),
   );
 }
 
 class Nearlikes extends StatefulWidget {
+  const Nearlikes({Key key}) : super(key: key);
+
   @override
   _NearlikesState createState() => _NearlikesState();
 }
