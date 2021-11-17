@@ -428,527 +428,481 @@ class _HomePageState extends State<HomePage> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     Size size = MediaQuery.of(context).size;
-    return WillPopScope(
-        onWillPop: () async {
-          bool closeApp = false;
-          Get.dialog(
-            AlertDialog(
-              title: const Text('Exit Nearlikes'),
-              content: const Text('Are you sure want to close the App?'),
-              actions: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: kSecondaryBackgroundColor,
-                    textStyle: const TextStyle(color: kWhiteColor),
-                  ),
-                  child: const Text('Yes'),
-                  onPressed: () {
-                    closeApp = true;
-                    Get.back();
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  },
+    return SafeArea(
+      child: Scaffold(
+        body: _getCustomer == null
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: kPrimaryColor,
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: kSecondaryColor,
-                    textStyle: const TextStyle(color: kWhiteColor),
-                  ),
-                  child: const Text('No'),
-                  onPressed: () {
-                    closeApp = false;
-                    Get.back();
-                  },
-                ),
-              ],
-            ),
-            barrierDismissible: false,
-          );
-          return closeApp;
-        },
-        child: SafeArea(
-          child: Scaffold(
-            body: _getCustomer == null
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: kPrimaryColor,
-                    ),
-                  )
-                : RefreshIndicator(
-                    color: kPrimaryColor,
-                    onRefresh: _refreshData,
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 20, left: 30, right: 30),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              )
+            : RefreshIndicator(
+                color: kPrimaryColor,
+                onRefresh: _refreshData,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Welcome,',
+                            Text(
+                              'Welcome,',
+                              style: GoogleFonts.montserrat(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        NotificationPage(cID: CID),
+                                  ),
+                                );
+                              },
+                              child: Badge(
+                                toAnimate: true,
+                                animationType: BadgeAnimationType.scale,
+                                badgeContent: Text(
+                                  '*',
                                   style: GoogleFonts.montserrat(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.black,
+                                    //badgeContent: Text('13',style: GoogleFonts.montserrat(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
                                   ),
                                 ),
-                                GestureDetector(
+                                child: const Icon(
+                                  Icons.notifications_active,
+                                  color: Colors.black,
+                                  size: 25,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(name,
+                            style: GoogleFonts.montserrat(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              color: kBlackColor,
+                            )),
+                        SizedBox(
+                          height: size.height * 0.200,
+                          width: double.infinity,
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                top: 45,
+                                left: MediaQuery.of(context).size.width * 0.188,
+                                child: Container(
+                                  height: size.height * 0.125,
+                                  width: size.width * 0.455,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xfff2f2f2),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: size.height * 0.060,
+                                      ),
+                                      if (_getCustomer.customer.status ==
+                                          'normal')
+                                        Text(
+                                          '',
+                                          style: GoogleFonts.montserrat(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: const Color(0xffB9B9B9),
+                                          ),
+                                        ),
+                                      if (_getCustomer.customer.status ==
+                                          'bronze')
+                                        Text('Bronze',
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.brown)),
+                                      if (_getCustomer.customer.status ==
+                                          'silver')
+                                        Text('Silver',
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black45)),
+                                      if (_getCustomer.customer.status ==
+                                          'gold')
+                                        Text('Gold',
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.amber)),
+
+                                      // SizedBox(
+                                      //   height: size.height*0.007,
+                                      // ),
+                                      // // Text("Rs. "+_getCustomer.customer.cashback[0].amount,
+                                      // Text("Rs. $sum",
+                                      //     style: GoogleFonts.montserrat(
+                                      //       fontSize: 23,
+                                      //       fontWeight: FontWeight.w600,
+                                      //       color: kBlack,
+                                      //     )),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: 15,
+                                left: MediaQuery.of(context).size.width * 0.325,
+                                child: Container(
+                                  height: size.height * 0.09,
+                                  width: 72,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        offset: const Offset(
+                                          4,
+                                          8,
+                                        ),
+                                        blurRadius: 20.0,
+                                        spreadRadius: 0,
+                                      ), //BoxShadow//BoxShadow
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Image.asset('assets/logo.png',
+                                        width: 32.48, height: 42.28),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        upi == true
+                            ? const Text('')
+                            : Center(
+                                child: GestureDetector(
                                   onTap: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            NotificationPage(cID: CID),
+                                        builder: (context) => LinkUPI(),
                                       ),
                                     );
                                   },
-                                  child: Badge(
-                                    toAnimate: true,
-                                    animationType: BadgeAnimationType.scale,
-                                    badgeContent: Text(
-                                      '*',
-                                      style: GoogleFonts.montserrat(
-                                        //badgeContent: Text('13',style: GoogleFonts.montserrat(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    child: const Icon(
-                                      Icons.notifications_active,
-                                      color: Colors.black,
-                                      size: 25,
-                                    ),
+                                  child: const Text(
+                                    'Press to Add UPI',
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17),
                                   ),
                                 ),
-                              ],
-                            ),
-                            Text(name,
-                                style: GoogleFonts.montserrat(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w700,
-                                  color: kBlackColor,
-                                )),
-                            SizedBox(
-                              height: size.height * 0.200,
-                              width: double.infinity,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: 45,
-                                    left: MediaQuery.of(context).size.width *
-                                        0.188,
-                                    child: Container(
-                                      height: size.height * 0.125,
-                                      width: size.width * 0.455,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xfff2f2f2),
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(8),
-                                        ),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            height: size.height * 0.060,
-                                          ),
-                                          if (_getCustomer.customer.status ==
-                                              'normal')
-                                            Text(
-                                              '',
-                                              style: GoogleFonts.montserrat(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.bold,
-                                                color: const Color(0xffB9B9B9),
-                                              ),
-                                            ),
-                                          if (_getCustomer.customer.status ==
-                                              'bronze')
-                                            Text('Bronze',
-                                                style: GoogleFonts.montserrat(
-                                                    fontSize: 22,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.brown)),
-                                          if (_getCustomer.customer.status ==
-                                              'silver')
-                                            Text('Silver',
-                                                style: GoogleFonts.montserrat(
-                                                    fontSize: 22,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black45)),
-                                          if (_getCustomer.customer.status ==
-                                              'gold')
-                                            Text('Gold',
-                                                style: GoogleFonts.montserrat(
-                                                    fontSize: 22,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.amber)),
-
-                                          // SizedBox(
-                                          //   height: size.height*0.007,
-                                          // ),
-                                          // // Text("Rs. "+_getCustomer.customer.cashback[0].amount,
-                                          // Text("Rs. $sum",
-                                          //     style: GoogleFonts.montserrat(
-                                          //       fontSize: 23,
-                                          //       fontWeight: FontWeight.w600,
-                                          //       color: kBlack,
-                                          //     )),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: 15,
-                                    left: MediaQuery.of(context).size.width *
-                                        0.325,
-                                    child: Container(
-                                      height: size.height * 0.09,
-                                      width: 72,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.1),
-                                            offset: const Offset(
-                                              4,
-                                              8,
-                                            ),
-                                            blurRadius: 20.0,
-                                            spreadRadius: 0,
-                                          ), //BoxShadow//BoxShadow
-                                        ],
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Image.asset('assets/logo.png',
-                                            width: 32.48, height: 42.28),
-                                      ),
-                                    ),
-                                  ),
-                                ],
                               ),
-                            ),
-                            upi == true
-                                ? const Text('')
-                                : Center(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => LinkUPI(),
-                                          ),
-                                        );
-                                      },
-                                      child: const Text(
-                                        'Press to Add UPI',
-                                        style: TextStyle(
+                        SizedBox(height: size.height * 0.01),
+                        Text(
+                          'Brands',
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Expanded(
+                          child: StreamBuilder(
+                              // future: getAvailableCampaigns(
+                              //     followers: 500, location: "kolkata", age: 40),
+                              stream: _selectBrand.stream,
+                              builder: (context, AsyncSnapshot snapshot) {
+                                if (!snapshot.hasData) {
+                                  print(snapshot.data);
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: kPrimaryColor,
+                                    ),
+                                  );
+                                }
+                                print(snapshot.data);
+                                return _getCampaigns.campaigns.isEmpty
+                                    ? const Padding(
+                                        padding: EdgeInsets.only(top: 180),
+                                        child: Text(
+                                          'No Brands available at your location for now,\nThank you!',
+                                          style: TextStyle(
                                             color: Colors.red,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17),
-                                      ),
-                                    ),
-                                  ),
-                            SizedBox(height: size.height * 0.01),
-                            Text(
-                              'Brands',
-                              style: GoogleFonts.poppins(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Expanded(
-                              child: StreamBuilder(
-                                  // future: getAvailableCampaigns(
-                                  //     followers: 500, location: "kolkata", age: 40),
-                                  stream: _selectBrand.stream,
-                                  builder: (context, AsyncSnapshot snapshot) {
-                                    if (!snapshot.hasData) {
-                                      print(snapshot.data);
-                                      return const Center(
-                                        child: CircularProgressIndicator(
-                                          color: kPrimaryColor,
+                                            fontSize: 15,
+                                          ),
                                         ),
-                                      );
-                                    }
-                                    print(snapshot.data);
-                                    return _getCampaigns.campaigns.isEmpty
-                                        ? const Padding(
-                                            padding: EdgeInsets.only(top: 180),
-                                            child: Text(
-                                              'No Brands available at your location for now,\nThank you!',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                          )
-                                        : ListView.builder(
-                                            scrollDirection: Axis.vertical,
-                                            shrinkWrap: true,
-                                            itemCount:
-                                                _getCampaigns.campaigns.length,
-                                            // _getCampaigns.campaigns.length,
-                                            itemBuilder:
-                                                (BuildContext ctx, index) {
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: SizedBox(
-                                                  height: size.height * 0.32,
-                                                  width: 140,
-                                                  // child: Card(
-                                                  //   child: Image.network(
-                                                  //       "${_getCampaigns.campaigns[index].logo}"),
-                                                  // ),
-                                                  child: GestureDetector(
-                                                      onTap: () {
-                                                        // Navigator.pop(context);
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                BrandDetails(
-                                                              campaign:
-                                                                  _getCampaigns
-                                                                          .campaigns[
-                                                                      index],
-                                                            ),
-                                                          ),
-                                                        );
+                                      )
+                                    : ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount:
+                                            _getCampaigns.campaigns.length,
+                                        // _getCampaigns.campaigns.length,
+                                        itemBuilder: (BuildContext ctx, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              height: size.height * 0.32,
+                                              width: 140,
+                                              // child: Card(
+                                              //   child: Image.network(
+                                              //       "${_getCampaigns.campaigns[index].logo}"),
+                                              // ),
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    // Navigator.pop(context);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            BrandDetails(
+                                                          campaign: _getCampaigns
+                                                              .campaigns[index],
+                                                        ),
+                                                      ),
+                                                    );
 
-                                                        // if (_getCustomer
-                                                        //         .customer
-                                                        //         .status ==
-                                                        //     'normal') {
-                                                        //   showDialog(
-                                                        //       context:
-                                                        //           context,
-                                                        //       builder:
-                                                        //           (BuildContext
-                                                        //               context) {
-                                                        //         return AlertDialog(
-                                                        //           title:
-                                                        //               Row(
-                                                        //             //mainAxisAlignment: MainAxisAlignment.center,
-                                                        //             children: [
-                                                        //               Text("Link with Instagram",
-                                                        //                   style: GoogleFonts.montserrat(
-                                                        //                     fontSize: 18,
-                                                        //                     fontWeight: FontWeight.w500,
-                                                        //                     color: kBlack,
-                                                        //                   )),
-                                                        //             ],
-                                                        //           ),
-                                                        //           content:
-                                                        //               Text(
-                                                        //             "Please link with your Instagram account to start sharing brands",
-                                                        //             style: GoogleFonts.montserrat(
-                                                        //                 fontSize: 16,
-                                                        //                 fontWeight: FontWeight.w400,
-                                                        //                 color: Colors.black),
-                                                        //           ),
-                                                        //           actions: [
-                                                        //             Row(
-                                                        //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                        //               children: [
-                                                        //                 ElevatedButton(
-                                                        //                   style: ElevatedButton.styleFrom(
-                                                        //                     primary: Colors.white,
-                                                        //                     shape: const RoundedRectangleBorder(
-                                                        //                       side: BorderSide(color: kPrimaryOrange),
-                                                        //                       borderRadius: BorderRadius.all(
-                                                        //                         Radius.circular(5),
-                                                        //                       ),
-                                                        //                     ),
-                                                        //                   ),
-                                                        //                   onPressed: () async {
-                                                        //                     Navigator.pop(context);
-                                                        //                   },
-                                                        //                   child: Text(
-                                                        //                     'Cancel',
-                                                        //                     style: GoogleFonts.montserrat(
-                                                        //                       fontSize: 16,
-                                                        //                       fontWeight: FontWeight.w500,
-                                                        //                       color: kPrimaryOrange,
-                                                        //                     ),
-                                                        //                   ),
-                                                        //                 ),
-                                                        //                 ElevatedButton(
-                                                        //                   onPressed: () {
-                                                        //                     Navigator.pop(context);
-                                                        //                     Navigator.push(context, MaterialPageRoute(builder: (context) => SetupInstructions()));
-                                                        //                   },
-                                                        //                   style: ElevatedButton.styleFrom(
-                                                        //                     primary: kPrimaryOrange.withOpacity(0.8),
-                                                        //                     shape: const RoundedRectangleBorder(
-                                                        //                       side: BorderSide(color: kPrimaryOrange),
-                                                        //                       borderRadius: BorderRadius.all(
-                                                        //                         Radius.circular(5),
-                                                        //                       ),
-                                                        //                     ),
-                                                        //                   ),
-                                                        //                   child: Text(
-                                                        //                     'Okay',
-                                                        //                     style: GoogleFonts.montserrat(
-                                                        //                       fontSize: 16,
-                                                        //                       fontWeight: FontWeight.w500,
-                                                        //                       color: Colors.white,
-                                                        //                     ),
-                                                        //                   ),
-                                                        //                 )
-                                                        //               ],
-                                                        //             )
-                                                        //           ],
-                                                        //           //descriptions: "Hii all this is a custom dialog in flutter and  you will be use in your flutter applications",
-                                                        //           //text: "Yes",
-                                                        //         );
-                                                        //       });
-                                                        // } else {
-                                                        //   Navigator.push(
-                                                        //       context,
-                                                        //       MaterialPageRoute(
-                                                        //           builder: (context) => BrandDetails(
-                                                        //                 campaign: _getCampaigns.campaigns[index],
-                                                        //               )));
-                                                        // }
-                                                      },
-                                                      //child: Image.asset('assets/brands.png'));
-                                                      child: ShaderMask(
-                                                        shaderCallback:
-                                                            (bounds) {
-                                                          return const LinearGradient(
+                                                    // if (_getCustomer
+                                                    //         .customer
+                                                    //         .status ==
+                                                    //     'normal') {
+                                                    //   showDialog(
+                                                    //       context:
+                                                    //           context,
+                                                    //       builder:
+                                                    //           (BuildContext
+                                                    //               context) {
+                                                    //         return AlertDialog(
+                                                    //           title:
+                                                    //               Row(
+                                                    //             //mainAxisAlignment: MainAxisAlignment.center,
+                                                    //             children: [
+                                                    //               Text("Link with Instagram",
+                                                    //                   style: GoogleFonts.montserrat(
+                                                    //                     fontSize: 18,
+                                                    //                     fontWeight: FontWeight.w500,
+                                                    //                     color: kBlack,
+                                                    //                   )),
+                                                    //             ],
+                                                    //           ),
+                                                    //           content:
+                                                    //               Text(
+                                                    //             "Please link with your Instagram account to start sharing brands",
+                                                    //             style: GoogleFonts.montserrat(
+                                                    //                 fontSize: 16,
+                                                    //                 fontWeight: FontWeight.w400,
+                                                    //                 color: Colors.black),
+                                                    //           ),
+                                                    //           actions: [
+                                                    //             Row(
+                                                    //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    //               children: [
+                                                    //                 ElevatedButton(
+                                                    //                   style: ElevatedButton.styleFrom(
+                                                    //                     primary: Colors.white,
+                                                    //                     shape: const RoundedRectangleBorder(
+                                                    //                       side: BorderSide(color: kPrimaryOrange),
+                                                    //                       borderRadius: BorderRadius.all(
+                                                    //                         Radius.circular(5),
+                                                    //                       ),
+                                                    //                     ),
+                                                    //                   ),
+                                                    //                   onPressed: () async {
+                                                    //                     Navigator.pop(context);
+                                                    //                   },
+                                                    //                   child: Text(
+                                                    //                     'Cancel',
+                                                    //                     style: GoogleFonts.montserrat(
+                                                    //                       fontSize: 16,
+                                                    //                       fontWeight: FontWeight.w500,
+                                                    //                       color: kPrimaryOrange,
+                                                    //                     ),
+                                                    //                   ),
+                                                    //                 ),
+                                                    //                 ElevatedButton(
+                                                    //                   onPressed: () {
+                                                    //                     Navigator.pop(context);
+                                                    //                     Navigator.push(context, MaterialPageRoute(builder: (context) => SetupInstructions()));
+                                                    //                   },
+                                                    //                   style: ElevatedButton.styleFrom(
+                                                    //                     primary: kPrimaryOrange.withOpacity(0.8),
+                                                    //                     shape: const RoundedRectangleBorder(
+                                                    //                       side: BorderSide(color: kPrimaryOrange),
+                                                    //                       borderRadius: BorderRadius.all(
+                                                    //                         Radius.circular(5),
+                                                    //                       ),
+                                                    //                     ),
+                                                    //                   ),
+                                                    //                   child: Text(
+                                                    //                     'Okay',
+                                                    //                     style: GoogleFonts.montserrat(
+                                                    //                       fontSize: 16,
+                                                    //                       fontWeight: FontWeight.w500,
+                                                    //                       color: Colors.white,
+                                                    //                     ),
+                                                    //                   ),
+                                                    //                 )
+                                                    //               ],
+                                                    //             )
+                                                    //           ],
+                                                    //           //descriptions: "Hii all this is a custom dialog in flutter and  you will be use in your flutter applications",
+                                                    //           //text: "Yes",
+                                                    //         );
+                                                    //       });
+                                                    // } else {
+                                                    //   Navigator.push(
+                                                    //       context,
+                                                    //       MaterialPageRoute(
+                                                    //           builder: (context) => BrandDetails(
+                                                    //                 campaign: _getCampaigns.campaigns[index],
+                                                    //               )));
+                                                    // }
+                                                  },
+                                                  //child: Image.asset('assets/brands.png'));
+                                                  child: ShaderMask(
+                                                    shaderCallback: (bounds) {
+                                                      return const LinearGradient(
                                                               begin: Alignment
                                                                   .topCenter,
                                                               end: Alignment
                                                                   .bottomCenter,
                                                               colors: [
-                                                                Colors
-                                                                    .transparent,
-                                                                Colors.black
-                                                              ]).createShader(
-                                                              bounds);
-                                                        },
-                                                        blendMode:
-                                                            BlendMode.color,
-                                                        child: Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              image:
-                                                                  DecorationImage(
-                                                                      // image: AssetImage('assets/scratch_card.png'),
-                                                                      image: NetworkImage(_getCampaigns
+                                                            Colors.transparent,
+                                                            Colors.black
+                                                          ])
+                                                          .createShader(bounds);
+                                                    },
+                                                    blendMode: BlendMode.color,
+                                                    child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          image:
+                                                              DecorationImage(
+                                                                  // image: AssetImage('assets/scratch_card.png'),
+                                                                  image: NetworkImage(
+                                                                      _getCampaigns
                                                                           .campaigns[
                                                                               0]
                                                                           .logo),
-                                                                      fit: BoxFit
-                                                                          .cover),
-                                                              color: const Color(
-                                                                  0xffaaaaaa),
-                                                              borderRadius:
-                                                                  const BorderRadius
-                                                                          .all(
-                                                                      Radius.circular(
+                                                                  fit: BoxFit
+                                                                      .cover),
+                                                          color: const Color(
+                                                              0xffaaaaaa),
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                      .all(
+                                                                  Radius
+                                                                      .circular(
                                                                           5)),
+                                                        ),
+                                                        child: Stack(
+                                                          children: [
+                                                            Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      gradient:
+                                                                          LinearGradient(
+                                                                colors: [
+                                                                  Colors.white
+                                                                      .withOpacity(
+                                                                          0.0),
+                                                                  Colors.black
+                                                                      .withOpacity(
+                                                                          0.9)
+                                                                ],
+                                                                begin: Alignment
+                                                                    .topCenter,
+                                                                end: Alignment
+                                                                    .bottomCenter,
+                                                              )),
                                                             ),
-                                                            child: Stack(
-                                                              children: [
-                                                                Container(
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                          gradient:
-                                                                              LinearGradient(
-                                                                    colors: [
-                                                                      Colors
-                                                                          .white
-                                                                          .withOpacity(
-                                                                              0.0),
-                                                                      Colors
-                                                                          .black
-                                                                          .withOpacity(
-                                                                              0.9)
-                                                                    ],
-                                                                    begin: Alignment
-                                                                        .topCenter,
-                                                                    end: Alignment
-                                                                        .bottomCenter,
-                                                                  )),
-                                                                ),
-                                                                Center(
-                                                                  child:
-                                                                      Padding(
-                                                                    padding: const EdgeInsets
+                                                            Center(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
                                                                             .only(
                                                                         top:
                                                                             8.0,
                                                                         bottom:
                                                                             15),
-                                                                    child:
-                                                                        Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .end,
-                                                                      children: [
-                                                                        Text(
-                                                                          _getCampaigns
-                                                                              .campaigns[0]
-                                                                              .brand,
-                                                                          style: GoogleFonts.montserrat(
-                                                                              fontSize: 16,
-                                                                              fontWeight: FontWeight.w500,
-                                                                              color: Colors.white),
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          height:
-                                                                              8,
-                                                                        ),
-                                                                        // Text(
-                                                                        //   "${_getCampaigns.campaigns[index].text}",
-                                                                        //   style: GoogleFonts.montserrat(
-                                                                        //     fontSize: 14,
-                                                                        //     fontWeight: FontWeight.w400,
-                                                                        //     color: Colors.white,
-                                                                        //   ),),
-                                                                        // Text(
-                                                                        //   "${readTimestamp(_getCampaigns.campaigns[index].start)}",style: GoogleFonts.montserrat(
-                                                                        //     fontSize: 11,
-                                                                        //     fontWeight: FontWeight.w500,
-                                                                        //     color:Colors.white
-                                                                        // ),),
-                                                                        // Text(
-                                                                        //   "to ${readTimestamp(_getCampaigns.campaigns[index].end)}",style: GoogleFonts.montserrat(
-                                                                        //     fontSize: 11,
-                                                                        //     fontWeight: FontWeight.w500,
-                                                                        //     color: Colors.white
-                                                                        // ),),
-                                                                      ],
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .end,
+                                                                  children: [
+                                                                    Text(
+                                                                      _getCampaigns
+                                                                          .campaigns[
+                                                                              0]
+                                                                          .brand,
+                                                                      style: GoogleFonts.montserrat(
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight: FontWeight
+                                                                              .w500,
+                                                                          color:
+                                                                              Colors.white),
                                                                     ),
-                                                                  ),
+                                                                    const SizedBox(
+                                                                      height: 8,
+                                                                    ),
+                                                                    // Text(
+                                                                    //   "${_getCampaigns.campaigns[index].text}",
+                                                                    //   style: GoogleFonts.montserrat(
+                                                                    //     fontSize: 14,
+                                                                    //     fontWeight: FontWeight.w400,
+                                                                    //     color: Colors.white,
+                                                                    //   ),),
+                                                                    // Text(
+                                                                    //   "${readTimestamp(_getCampaigns.campaigns[index].start)}",style: GoogleFonts.montserrat(
+                                                                    //     fontSize: 11,
+                                                                    //     fontWeight: FontWeight.w500,
+                                                                    //     color:Colors.white
+                                                                    // ),),
+                                                                    // Text(
+                                                                    //   "to ${readTimestamp(_getCampaigns.campaigns[index].end)}",style: GoogleFonts.montserrat(
+                                                                    //     fontSize: 11,
+                                                                    //     fontWeight: FontWeight.w500,
+                                                                    //     color: Colors.white
+                                                                    // ),),
+                                                                  ],
                                                                 ),
-                                                              ],
-                                                            )),
-                                                      )),
-                                                ),
-                                              );
-                                            });
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )),
+                                                  )),
+                                            ),
+                                          );
+                                        });
 
-                                    //return Container();
-                                  }),
-                            ),
-                          ],
+                                //return Container();
+                              }),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-          ),
-        ));
+                ),
+              ),
+      ),
+    );
   }
 
   //Title List for Metrics Data Cards

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:nearlikes/home_page.dart';
 import 'package:nearlikes/profile_page.dart';
 import 'package:nearlikes/select_brand.dart';
@@ -23,17 +25,53 @@ class _PageGuideState extends State<PageGuide> {
   @override
   Widget build(BuildContext context) {
     final tabs = [
-      HomePage(),
+      const HomePage(),
       //SelectBrand(),
       Wallet(),
       ProfilePage(phoneNumber: widget.phoneNumber),
     ];
     return WillPopScope(
       onWillPop: () async {
-        setState(() {
-          _currentIndex = 0;
-        });
-        return false;
+        bool closeApp = false;
+        if (_currentIndex == 0) {
+          Get.dialog(
+            AlertDialog(
+              title: const Text('Exit Nearlikes'),
+              content: const Text('Are you sure want to close the App?'),
+              actions: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: kSecondaryBackgroundColor,
+                    textStyle: const TextStyle(color: kWhiteColor),
+                  ),
+                  child: const Text('Yes'),
+                  onPressed: () {
+                    closeApp = true;
+                    Get.back();
+                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: kSecondaryColor,
+                    textStyle: const TextStyle(color: kWhiteColor),
+                  ),
+                  child: const Text('No'),
+                  onPressed: () {
+                    closeApp = false;
+                    Get.back();
+                  },
+                ),
+              ],
+            ),
+            barrierDismissible: false,
+          );
+        } else {
+          setState(() {
+            _currentIndex = 0;
+          });
+        }
+        return closeApp;
       },
       child: Scaffold(
         body: tabs[_currentIndex],
