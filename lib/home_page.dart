@@ -2,6 +2,7 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:nearlikes/coupons.dart';
 import 'package:nearlikes/brand_details.dart';
 import 'package:nearlikes/constants/colors.dart';
@@ -428,8 +429,41 @@ class _HomePageState extends State<HomePage> {
     double width = MediaQuery.of(context).size.width;
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
-        onWillPop: () {
-          return SystemNavigator.pop();
+        onWillPop: () async {
+          bool closeApp = false;
+          Get.dialog(
+            AlertDialog(
+              title: const Text('Exit Nearlikes'),
+              content: const Text('Are you sure want to close the App?'),
+              actions: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: kSecondaryBackgroundColor,
+                    textStyle: const TextStyle(color: kWhiteColor),
+                  ),
+                  child: const Text('Yes'),
+                  onPressed: () {
+                    closeApp = true;
+                    Get.back();
+                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: kSecondaryColor,
+                    textStyle: const TextStyle(color: kWhiteColor),
+                  ),
+                  child: const Text('No'),
+                  onPressed: () {
+                    closeApp = false;
+                    Get.back();
+                  },
+                ),
+              ],
+            ),
+            barrierDismissible: false,
+          );
+          return closeApp;
         },
         child: SafeArea(
           child: Scaffold(
